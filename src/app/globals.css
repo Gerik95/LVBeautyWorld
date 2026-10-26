@@ -3,6 +3,8 @@
 :root {
   --lv-paper: #efece6;
   --lv-ink: #111111;
+  --book-bg: #111111;
+  --book-fg: #f4f2ef;
   --lv-elev: #ffffff;
   --lv-line: rgba(44, 41, 42, 0.16);
   --lv-glow: rgba(255, 255, 255, 0.55);
@@ -22,6 +24,8 @@
 html[data-theme="dark"] {
   --lv-paper: #0b0b0c;
   --lv-ink: #f4f2ef;
+  --book-bg: #f4f2ef;
+  --book-fg: #111111;
   --lv-elev: #161617;
   --lv-line: rgba(244, 242, 239, 0.14);
   --lv-glow: rgba(255, 255, 255, 0.28);
@@ -73,14 +77,23 @@ a {
   box-shadow: var(--lv-shadow);
 }
 
-.book-btn {
-  background: #111111;
-  color: #f4f2ef;
+a.book-btn,
+a.book-btn:link,
+a.book-btn:visited,
+a.book-btn:hover,
+a.book-btn:active,
+a.book-btn:focus,
+a.book-btn:focus-visible {
+  flex-shrink: 0;
+  white-space: nowrap;
+  background-color: var(--book-bg) !important;
+  color: var(--book-fg) !important;
+  -webkit-text-fill-color: var(--book-fg) !important;
 }
 
-html[data-theme="dark"] .book-btn {
-  background: #f4f2ef;
-  color: #0b0b0c;
+a.book-btn .book-btn-label {
+  color: var(--book-fg) !important;
+  -webkit-text-fill-color: var(--book-fg) !important;
 }
 
 .btn-glow {
