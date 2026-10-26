@@ -1,0 +1,170 @@
+@import "tailwindcss";
+
+:root {
+  --lv-paper: #efece6;
+  --lv-ink: #111111;
+  --lv-elev: #ffffff;
+  --lv-line: rgba(44, 41, 42, 0.16);
+  --lv-glow: rgba(255, 255, 255, 0.55);
+  --lv-glass: rgba(247, 246, 243, 0.55);
+  --lv-glass-edge: rgba(255, 255, 255, 0.55);
+  --lv-shadow: 0 18px 50px rgba(17, 17, 17, 0.12);
+  --lv-graphite: #2c292a;
+  --lv-muted: #6e6a67;
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.75rem;
+  --radius-pill: 999px;
+  --nav-h: 4.25rem;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html[data-theme="dark"] {
+  --lv-paper: #0b0b0c;
+  --lv-ink: #f4f2ef;
+  --lv-elev: #161617;
+  --lv-line: rgba(244, 242, 239, 0.14);
+  --lv-glow: rgba(255, 255, 255, 0.28);
+  --lv-glass: rgba(18, 18, 20, 0.62);
+  --lv-glass-edge: rgba(255, 255, 255, 0.14);
+  --lv-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --lv-muted: #a8a29e;
+}
+
+html,
+body {
+  background: var(--lv-paper);
+  color: var(--lv-ink);
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-manrope), "Segoe UI", sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-cormorant), "Times New Roman", serif;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--lv-ink);
+  outline-offset: 3px;
+}
+
+.page-pad {
+  padding-bottom: calc(var(--nav-h) + var(--safe-bottom) + 2.5rem);
+}
+
+.glass {
+  background: var(--lv-glass);
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  border: 1px solid var(--lv-glass-edge);
+  box-shadow: var(--lv-shadow);
+}
+
+.book-btn {
+  background: #111111;
+  color: #f4f2ef;
+}
+
+html[data-theme="dark"] .book-btn {
+  background: #f4f2ef;
+  color: #0b0b0c;
+}
+
+.btn-glow {
+  box-shadow: 0 0 0 1px var(--lv-glass-edge), 0 8px 24px rgba(0, 0, 0, 0.18);
+  transition: box-shadow 200ms ease, transform 200ms ease, background 200ms ease;
+}
+
+.btn-glow:hover,
+.btn-glow:focus-visible {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.7),
+    0 0 22px var(--lv-glow),
+    0 10px 28px rgba(0, 0, 0, 0.2);
+}
+
+.logo-backlight {
+  filter: drop-shadow(0 0 0 transparent);
+}
+
+.logo-backlight.is-playing {
+  animation: logoPulse 2.1s ease-out 1 forwards;
+}
+
+.logo-on-dark {
+  display: none;
+}
+
+html[data-theme="dark"] .logo-on-light {
+  display: none;
+}
+
+html[data-theme="dark"] .logo-on-dark {
+  display: block;
+}
+
+.logo-backlight.is-steady {
+  filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.35));
+}
+
+html[data-theme="light"] .logo-backlight.is-steady {
+  filter: drop-shadow(0 0 16px rgba(44, 41, 42, 0.18));
+}
+
+@keyframes logoPulse {
+  0% {
+    filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0));
+  }
+  22% {
+    filter: drop-shadow(0 0 22px rgba(255, 255, 255, 0.55));
+  }
+  40% {
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+  }
+  62% {
+    filter: drop-shadow(0 0 26px rgba(255, 255, 255, 0.6));
+  }
+  100% {
+    filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.35));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-backlight.is-playing,
+  .logo-backlight.is-steady {
+    animation: none;
+    filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.28));
+  }
+
+  .btn-glow {
+    transition: none;
+  }
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  background: var(--lv-ink);
+  color: var(--lv-paper);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  z-index: 80;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
