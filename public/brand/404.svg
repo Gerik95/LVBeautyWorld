@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="600" viewBox="0 0 1240 600">
+<!--
+  404 in the drawing language of logo.svg: one row the height of an LV row (484),
+  heavy strokes 76.7 wide like the stem of L, hairlines about 10.6 like the bar of L
+  and the right arm of V. Strokes rising to the right are thin, verticals are heavy.
+  Same ink #2c292a. Shown through the hero lamp, so it gets the same rim and halo.
+-->
+<g fill="#2c292a">
+  <!-- 4 -->
+  <g transform="translate(40 58)">
+    <rect x="210" y="0" width="76.7" height="484"/>
+    <path d="M206 0H219.6L13.6 336H0Z"/>
+    <rect x="0" y="336" width="346" height="10.6"/>
+  </g>
+  <!-- 0 -->
+  <path fill-rule="evenodd" transform="translate(450 58)" d="M170 0C263.9 0 340 108.3 340 242S263.9 484 170 484 0 375.7 0 242 76.1 0 170 0ZM170 10.6C221.5 10.6 263.3 114.2 263.3 242S221.5 473.4 170 473.4 76.7 369.8 76.7 242 118.5 10.6 170 10.6Z"/>
+  <!-- 4 -->
+  <g transform="translate(854 58)">
+    <rect x="210" y="0" width="76.7" height="484"/>
+    <path d="M206 0H219.6L13.6 336H0Z"/>
+    <rect x="0" y="336" width="346" height="10.6"/>
+  </g>
+</g>
+</svg>

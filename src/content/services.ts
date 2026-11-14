@@ -8,10 +8,24 @@ export type ServiceId =
   | "pmu"
   | "makeup";
 
+/** Home gallery, in the existing service order. PMU and styling keep their own pages. */
+export const homeServiceIds = [
+  "nails",
+  "lashes-brows",
+  "lash-extensions",
+  "hair",
+  "skin",
+  "laser",
+] as const satisfies readonly ServiceId[];
+
+export type HomeServiceId = (typeof homeServiceIds)[number];
+
 export type Service = {
   id: ServiceId;
   image: string;
   imageAlt: { de: string; uk: string };
+  objectPosition?: string;
+  gallery?: { src: string; alt: { de: string; uk: string }; objectPosition?: string }[];
   name: { de: string; uk: string };
   short: { de: string; uk: string };
   body: { de: string; uk: string };
@@ -26,19 +40,38 @@ export const services: Service[] = [
       de: "Maniküre im Salon LV Beauty World",
       uk: "Манікюр у салоні LV Beauty World",
     },
+    objectPosition: "center 42%",
+    gallery: [
+      {
+        src: "/photos/services/nails.jpg",
+        alt: {
+          de: "Maniküre im Salon LV Beauty World",
+          uk: "Манікюр у салоні LV Beauty World",
+        },
+        objectPosition: "center 42%",
+      },
+      {
+        src: "/photos/services/pedicure.jpg",
+        alt: {
+          de: "Pediküre im Salon LV Beauty World",
+          uk: "Педикюр у салоні LV Beauty World",
+        },
+        objectPosition: "center",
+      },
+    ],
     name: { de: "Maniküre & Pediküre", uk: "Манікюр і педикюр" },
     short: {
       de: "Klassisch, Gel-Lack oder Modellage — inklusive Babyboomer und individueller Designs.",
-      uk: "Класика, гель-лак або моделювання — зокрема babyboomer та індивідуальний дизайн.",
+      uk: "Класика, гель-лак або нарощування — френч, babyboomer і дизайн на ваш смак.",
     },
     body: {
-      de: "Gepflegte Hände und Füße sind Teil eines ruhigen, präzisen Auftritts. Wir arbeiten mit Gel-Lack, Gel- oder Acryl-Modellage und setzen Designs wie French oder Babyboomer um — kurz, rund, ballerina oder square, mit oder ohne Gel. Pediküre bieten wir hygienisch, als Kombi oder apparativ an; auf Wunsch mit Lack oder Gel-Lack. Werkzeuge werden nach jeder Anwendung desinfiziert und sterilisiert. Eine medizinische Diagnose ersetzen wir nicht; bei besonderen Fußsituationen stimmen wir uns mit Fachpersonal ab.",
-      uk: "Доглянуті руки й стопи — частина спокійного, точного образу. Працюємо з гель-лаком, гелевим або акриловим моделюванням і робимо дизайни на кшталт френча чи babyboomer — короткі, круглі, ballerina чи square, з гелем або без. Педикюр — гігієнічний, комбінований або апаратний; за бажанням з лаком чи гель-лаком. Інструменти дезінфікуємо та стерилізуємо після кожного використання. Медичний діагноз не ставимо; у разі особливих станів стоп узгоджуємо роботу з профільними фахівцями.",
+      de: "Gepflegte Hände und Füße sind Teil eines ruhigen, präzisen Auftritts. Wir arbeiten mit Gel-Lack und Gel-Modellage und setzen Designs wie French oder Babyboomer um — kurz, rund, ballerina oder square, mit oder ohne Gel. Pediküre bieten wir hygienisch, als Kombi oder apparativ an; auf Wunsch mit Lack oder Gel-Lack. Werkzeuge werden nach jeder Anwendung desinfiziert und sterilisiert. Eine medizinische Diagnose ersetzen wir nicht; bei besonderen Fußsituationen stimmen wir uns mit Fachpersonal ab.",
+      uk: "Доглянуті руки й стопи — це про акуратність, без поспіху. Робимо гель-лак і нарощування гелем, френч і babyboomer. Форма може бути короткою, круглою, балериною чи квадратом, з гелем або без. Педикюр буває гігієнічний, комбінований і апаратний, за бажанням — зі звичайним лаком або гель-лаком. Інструменти після кожного клієнта дезінфікуємо і стерилізуємо. Діагнозів не ставимо: якщо зі стопою щось особливе, узгодимо це з лікарем.",
     },
     treatments: [
       { de: "Klassische Maniküre & Gel-Lack (Shellac)", uk: "Класичний манікюр і гель-лак (Shellac)" },
-      { de: "Nagelmodellage Gel/Acryl, Babyboomer, French", uk: "Моделювання гель/акрил, babyboomer, френч" },
-      { de: "Hygiene-, Kombi- und apparative Pediküre", uk: "Гігієнічний, комбі- та апаратний педикюр" },
+      { de: "Nagelmodellage mit Gel, Babyboomer, French", uk: "Нарощування гелем, babyboomer, френч" },
+      { de: "Hygiene-, Kombi- und apparative Pediküre", uk: "Гігієнічний, комбінований і апаратний педикюр" },
     ],
   },
   {
@@ -51,11 +84,11 @@ export const services: Service[] = [
     name: { de: "Wimpern & Augenbrauen", uk: "Вії та брови" },
     short: {
       de: "Laminierung, Lifting, Formen und Färben — natürlicher Blick ohne tägliches Styling.",
-      uk: "Ламінування, ліфтинг, форма й фарбування — природний погляд без щоденного стайлінгу.",
+      uk: "Ламінування, ліфтинг, форма і фарбування — щоб погляд тримався без щоденного макіяжу.",
     },
     body: {
       de: "Laminierung und Lifting arbeiten mit Ihren eigenen Härchen: Form, Schwung, Pflege (unter anderem Keratin) und optionales Färben. Die Behandlung dauert etwa 45–60 Minuten; das Ergebnis bleibt je nach Haar etwa 6–8 Wochen sichtbar. 24 Stunden danach kein Wasser, Dampf oder Make-up auf der Augenpartie. Beim Formen färben wir Brauen nicht tiefschwarz und schneiden sie nicht extrem dünn. Wimpernlifting färbt auf Wunsch tiefschwarz und schließt mit Pflege ab.",
-      uk: "Ламінування й ліфтинг працюють із власними волосинами: форма, вигин, догляд (зокрема кератин) і за бажанням фарбування. Процедура триває близько 45–60 хвилин; результат тримається орієнтовно 6–8 тижнів. Доба після цього — без води, пари й макіяжу на зоні очей. Брови не фарбуємо в глибокий чорний і не робимо їх надто тонкими. Лаш-ліфтинг за бажанням фарбує вії в насичений чорний і завершується доглядом.",
+      uk: "Ламінування і ліфтинг робимо на ваших власних віях і бровах: форма, вигин, догляд (зокрема кератин) і фарбування, якщо хочете. Процедура триває приблизно 45–60 хвилин, ефект тримається близько 6–8 тижнів — залежить від волоска. Добу після неї очі не мочіть, не піддавайте пару і не фарбуйте. Брови не фарбуємо в глухий чорний і не вищипуємо в ниточку. Ліфтинг вій за бажанням фарбує їх у насичений чорний і закінчується доглядом.",
     },
     treatments: [
       { de: "Wimpern- und Augenbrauenlaminierung", uk: "Ламінування вій і брів" },
@@ -73,11 +106,11 @@ export const services: Service[] = [
     name: { de: "Wimpernverlängerung", uk: "Нарощування вій" },
     short: {
       de: "Classic, Volume, Wet-Look — in Schwarz, dunkler Schokolade oder Braun.",
-      uk: "Classic, Volume, Wet-Look — чорний, темний шоколад або коричневий.",
+      uk: "Класика, об’єм і мокрий ефект — чорні, шоколадні або коричневі.",
     },
     body: {
-      de: "Verlängerungen gibt es in drei Farben: klassisches Schwarz, dunkle Schokolade und Braun. Techniken reichen von Classic und Wet Lashes bis Volume, Cat Eye, Fox Eye, Anime, Lami-Effect und Wispy. Auffüllen nach 21 Tagen und komplettes Entfernen stehen auf der Preisliste. Die genaue Effektwahl erfolgt in der Behandlung — ohne erfundene Garantien.",
-      uk: "Нарощування пропонуємо в трьох кольорах: класичний чорний, темний шоколад і коричневий. Техніки — від Classic і Wet Lashes до Volume, Cat Eye, Fox Eye, Anime, Lami-Effect і Wispy. Корекція через 21 день і повне зняття є в прайсі. Конкретний ефект обираємо під час процедури — без вигаданих гарантій.",
+      de: "Verlängerungen gibt es in drei Farben: klassisches Schwarz, dunkle Schokolade und Braun. Techniken reichen von Classic und Wet Lashes bis Volume, Cat Eye, Fox Eye, Anime, Lami-Effect und Wispy. Auffüllen nach 21 Tagen und komplettes Entfernen stehen auf der Preisliste. Die genaue Effektwahl erfolgt in der Behandlung.",
+      uk: "Нарощуємо в трьох кольорах: класичний чорний, темний шоколад і коричневий. Є класика і wet lashes, об’єм, cat eye, fox eye, anime, ефект ламінування і wispy. Корекція через 21 день і повне зняття є в прайсі. Який ефект вам личить, обираємо вже на процедурі.",
     },
     treatments: [
       { de: "Classic / Wet Lashes", uk: "Classic / Wet Lashes" },
@@ -95,14 +128,14 @@ export const services: Service[] = [
     name: { de: "Haar", uk: "Волосся" },
     short: {
       de: "Schnitt, Farbe, Pflege und Verlängerung — von Ansatz bis Airtouch.",
-      uk: "Стрижка, колір, догляд і нарощування — від коренів до airtouch.",
+      uk: "Стрижка, фарбування, догляд і нарощування — від коренів до airtouch.",
     },
     body: {
-      de: "Farbarbeit reicht von der Ansatzfärbung über Glossing bis zu Strähnen, Balayage, Babylights, Airtouch und Low Lights; wir nutzen professionelle Haarfarbe. Pflege umfasst VIART-Rekonstruktion, kalte Rekonstruktion und Kopfhaut-Peeling. Haarverlängerung wird als Mikro-Kapsel-/Bonding-Leistung geführt. Keratin-Glättung steht bei Salonkee mit einem unplausiblen Einstiegspreis — wir listen sie nicht, bis der Salon den Betrag bestätigt.",
-      uk: "Колір — від фарбування коренів і глосінгу до пасом, балаяжу, babylights, airtouch і low lights; працюємо професійним барвником. Догляд: реконструкція VIART, холодна реконструкція, пілінг шкіри голови. Нарощування — мікрокапсули / bonding. Кератинове вирівнювання в Salonkee має неправдоподібну стартову ціну — не публікуємо її, доки салон не підтвердить суму.",
+      de: "Farbarbeit reicht von der Ansatzfärbung über Glossing bis zu Strähnen, Balayage, Babylights, Airtouch und Low Lights; wir nutzen professionelle Haarfarbe. Pflege umfasst VIART-Rekonstruktion, kalte Rekonstruktion und Kopfhaut-Peeling. Haarverlängerung wird als Mikro-Kapsel-/Bonding-Leistung geführt.",
+      uk: "Фарбуємо корені, робимо глосинг, пасма, балаяж, babylights, airtouch і low lights — професійною фарбою. З догляду є реконструкція VIART, холодна реконструкція волосся і пілінг шкіри голови. Нарощування кріпимо на мікрокапсулах.",
     },
     treatments: [
-      { de: "Schnitt, Föhnen, Herren- und Damenschnitt", uk: "Стрижка, фен, жіноча та чоловіча стрижка" },
+      { de: "Schnitt, Föhnen, Herren- und Damenschnitt", uk: "Стрижка, укладка феном, жіноча і чоловіча" },
       { de: "Coloration, Balayage, Airtouch", uk: "Фарбування, балаяж, airtouch" },
       { de: "Pflege, Rekonstruktion, Haarverlängerung", uk: "Догляд, реконструкція, нарощування" },
     ],
@@ -114,19 +147,19 @@ export const services: Service[] = [
       de: "Gesichtsbehandlung",
       uk: "Догляд за обличчям",
     },
-    name: { de: "Haut & Kosmetik", uk: "Шкіра та косметологія" },
+    name: { de: "Haut & Kosmetik", uk: "Догляд за шкірою" },
     short: {
       de: "Reinigung, Peelings, Hydrafacial und Meso — abgestimmt auf den Hauttyp.",
-      uk: "Чистка, пілінги, Hydrafacial і мезо — відповідно до типу шкіри.",
+      uk: "Чистка, пілінги, Hydrafacial і мезотерапія — під ваш тип шкіри.",
     },
     body: {
       de: "Statt einer pauschalen monatlichen Tiefenreinigung wählen wir die Behandlung nach Hauttyp: manuelle Tiefenreinigung, Hydrafacial, Enzym- und Säurepeelings, Intense Hydration sowie Meso / Bio-Revitalisierung / Microneedling. Beratung steht als eigene Position auf der Preisliste.",
-      uk: "Замість шаблонної щомісячної глибокої чистки обираємо процедуру за типом шкіри: ручна чистка, Hydrafacial, ензимні та кислотні пілінги, Intense Hydration, а також мезо / біоревіталізація / мікронідлінг. Консультація є окремою позицією в прайсі.",
+      uk: "Не ставимо всім одну й ту саму глибоку чистку раз на місяць. Дивимось на шкіру і пропонуємо ручну чистку, Hydrafacial, ензимний або кислотний пілінг, інтенсивне зволоження, мезотерапію, біоревіталізацію або мікронідлінг. Консультація в прайсі стоїть окремим пунктом.",
     },
     treatments: [
       { de: "Hydrafacial & manuelle Tiefenreinigung", uk: "Hydrafacial і ручна глибока чистка" },
-      { de: "Peelings (Mandel, Jessner, Milch-, Salicylsäure)", uk: "Пілінги (мигдальний, Джесснера, молочний, саліциловий)" },
-      { de: "Meso / Microneedling", uk: "Мезо / мікронідлінг" },
+      { de: "Peelings (Mandel, Jessner, Milch-, Salicylsäure)", uk: "Пілінги: мигдальний, Джесснера, молочний, саліциловий" },
+      { de: "Meso / Microneedling", uk: "Мезотерапія і мікронідлінг" },
     ],
   },
   {
@@ -139,16 +172,16 @@ export const services: Service[] = [
     name: { de: "Laser-Haarentfernung", uk: "Лазерна епіляція" },
     short: {
       de: "Zonen und Pakete für Damen und Herren — Preise nach Fläche.",
-      uk: "Зони й пакети для жінок і чоловіків — ціна залежить від ділянки.",
+      uk: "Окремі зони і пакети для жінок і чоловіків. Ціна залежить від ділянки.",
     },
     body: {
-      de: "Dauerhafte Haarentfernung mit Lasergeräten, in der Salonkee-Liste für nahezu alle Körperzonen und für Damen- sowie Herrenpakete. Gesicht, Achseln, Intimbereich, Beine, Arme und Rücken sind einzeln und als Kombination buchbar. Mehrere Sitzungen sind üblich; wir versprechen hier kein festes Sitzungskontingent, das der Salon nicht genannt hat.",
-      uk: "Довготривала лазерна епіляція — у прайсі Salonkee майже для всіх зон тіла, окремо для жінок і чоловіків. Обличчя, пахви, інтим, ноги, руки й спина — по зонах і пакетами. Зазвичай потрібні кілька сеансів; кількість, яку салон не назвав, ми не вигадуємо.",
+      de: "Dauerhafte Haarentfernung mit Lasergeräten für Gesicht, Achseln, Intimbereich, Beine, Arme und Rücken — einzelne Zonen und Pakete für Damen und Herren. Mehrere Sitzungen sind üblich.",
+      uk: "Лазерна епіляція обличчя, пахв, зони бікіні, ніг, рук і спини. Можна взяти одну зону або пакет — є варіанти для жінок і для чоловіків. Зазвичай потрібно кілька сеансів.",
     },
     treatments: [
-      { de: "Einzelzonen Gesicht & Körper", uk: "Окремі зони обличчя та тіла" },
-      { de: "Intim- und Beinpakete", uk: "Пакети інтим і ноги" },
-      { de: "Full Body (Damen)", uk: "Full Body (жінки)" },
+      { de: "Einzelzonen Gesicht & Körper", uk: "Окремі зони обличчя і тіла" },
+      { de: "Intim- und Beinpakete", uk: "Пакети: бікіні і ноги" },
+      { de: "Full Body (Damen)", uk: "Усе тіло (для жінок)" },
     ],
   },
   {
@@ -161,16 +194,16 @@ export const services: Service[] = [
     name: { de: "Permanent Make-up", uk: "Перманентний макіяж" },
     short: {
       de: "Puder-Brauen, Lippen, Lidstrich — plus Entfernung auf der Preisliste.",
-      uk: "Пудрові брови, губи, стрілка — у прайсі також зняття.",
+      uk: "Пудрові брови, губи і стрілка. Зняття теж є в прайсі.",
     },
     body: {
       de: "Puder-Permanent-Make-up für einen weichen Schattierungseffekt an Augenbrauen, Lippen und Lidstrich. Auf der Preisliste: Powder Brows, Aquarell Lips, Eyeliner und Shading Eyeliner sowie Laser-Tattoo- und PMU-Remover-Behandlungen. Lippenmodellierung und Gesichtskorrektur stehen als ästhetische Positionen daneben.",
-      uk: "Пудровий перманент — м’яке розтушування брів, губ і стрілки. У прайсі: Powder Brows, Aquarell Lips, Eyeliner і Shading Eyeliner, а також лазерне тату-виведення та PMU Remover. Окремо — моделювання губ і корекція обличчя.",
+      uk: "Пудровий перманент дає м’яку тінь на бровах, губах і повіці. У прайсі є пудрові брови, акварельні губи, стрілка і стрілка з розтушовкою, а також лазерне виведення тату і зняття перманенту. Окремо можна зробити моделювання губ і корекцію обличчя.",
     },
     treatments: [
       { de: "Powder Brows", uk: "Пудрові брови" },
-      { de: "Lippen (Aquarell)", uk: "Губи (акварель)" },
-      { de: "Lidstrich / Shading Eyeliner", uk: "Стрілка / shading eyeliner" },
+      { de: "Lippen (Aquarell)", uk: "Акварельні губи" },
+      { de: "Lidstrich / Shading Eyeliner", uk: "Стрілка і стрілка з розтушовкою" },
     ],
   },
   {
@@ -183,11 +216,11 @@ export const services: Service[] = [
     name: { de: "Make-up & Styling", uk: "Макіяж і укладка" },
     short: {
       de: "Alltag, Event und Braut — Make-up, Haar oder beides.",
-      uk: "Будні, подія й весілля — макіяж, волосся або разом.",
+      uk: "На кожен день, на свято і на весілля — макіяж, укладка або разом.",
     },
     body: {
-      de: "Professionelles Make-up und Hairstyling für Alltag, Shooting, Feier oder Hochzeit. Preise gelten für Make-up, Haarstyling, die Kombination und Brautstyling. Eine auf der Altsite genannte Cannes-Referenz haben wir nicht unabhängig geprüft und führen sie deshalb nicht als Fakt.",
-      uk: "Професійний макіяж і укладка для буднів, зйомки, свята чи весілля. У прайсі — макіяж, укладка, комбінація та весільний образ. Згадку про Канни зі старого сайту ми не перевірили незалежно, тому не подаємо її як факт.",
+      de: "Professionelles Make-up und Hairstyling für Alltag, Shooting, Feier oder Hochzeit. Preise gelten für Make-up, Haarstyling, die Kombination und Brautstyling.",
+      uk: "Зробимо макіяж і укладку на день, зйомку, свято чи весілля. У прайсі є макіяж, укладка, обидва разом і весільний образ.",
     },
     treatments: [
       { de: "Make-up", uk: "Макіяж" },
@@ -198,3 +231,12 @@ export const services: Service[] = [
 ];
 
 export const getService = (id: string) => services.find((item) => item.id === id);
+
+export const homeServices = () =>
+  homeServiceIds.flatMap((id) => {
+    const service = getService(id);
+    return service ? [service] : [];
+  });
+
+/** Photo for the home gallery. Each service uses its own file, including skin care. */
+export const serviceGalleryImage = (service: Service): string | null => service.image;

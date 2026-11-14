@@ -1,3 +1,5 @@
+import type { SalonkeeCategory } from "@/lib/booking";
+
 export type TeamMember = {
   slug: string;
   name: string;
@@ -6,6 +8,8 @@ export type TeamMember = {
   photo: string | null;
   /** CSS object-position for the portrait crop. */
   objectPosition: string;
+  /** Salonkee category list this master's booking button opens. */
+  salonkeeCategory: SalonkeeCategory;
 };
 
 export const team: TeamMember[] = [
@@ -22,6 +26,7 @@ export const team: TeamMember[] = [
     },
     photo: "/photos/team/kristina.jpg",
     objectPosition: "50% 18%",
+    salonkeeCategory: "augenbrauen-und-make-up",
   },
   {
     slug: "diana",
@@ -32,10 +37,11 @@ export const team: TeamMember[] = [
     },
     line: {
       de: "Expertin für Wimpernverlängerung",
-      uk: "Експертка з нарощування вій",
+      uk: "Майстриня з нарощування вій",
     },
     photo: null,
     objectPosition: "50% 20%",
+    salonkeeCategory: "augenbrauen-und-make-up",
   },
   {
     slug: "anastasiia",
@@ -44,6 +50,7 @@ export const team: TeamMember[] = [
     line: { de: "Nageldesignerin", uk: "Майстриня манікюру" },
     photo: null,
     objectPosition: "50% 20%",
+    salonkeeCategory: "nagelstudio",
   },
   {
     slug: "viktoriia",
@@ -52,6 +59,7 @@ export const team: TeamMember[] = [
     line: null,
     photo: "/photos/team/viktoriia.jpg",
     objectPosition: "50% 15%",
+    salonkeeCategory: "friseure",
   },
   {
     slug: "ilona",
@@ -60,6 +68,7 @@ export const team: TeamMember[] = [
     line: null,
     photo: "/photos/team/ilona.jpg",
     objectPosition: "48% 12%",
+    salonkeeCategory: "friseure",
   },
   {
     slug: "karina",
@@ -68,6 +77,7 @@ export const team: TeamMember[] = [
     line: { de: "Kosmetikerin", uk: "Косметологиня" },
     photo: "/photos/team/karina.jpg",
     objectPosition: "50% 18%",
+    salonkeeCategory: "gesichtspflege",
   },
   {
     slug: "anzhelika",
@@ -76,6 +86,7 @@ export const team: TeamMember[] = [
     line: { de: "Nageldesignerin", uk: "Майстриня манікюру" },
     photo: null,
     objectPosition: "50% 20%",
+    salonkeeCategory: "nagelstudio",
   },
   {
     slug: "tetiana",
@@ -84,6 +95,7 @@ export const team: TeamMember[] = [
     line: { de: "Nageldesignerin", uk: "Майстриня манікюру" },
     photo: null,
     objectPosition: "50% 20%",
+    salonkeeCategory: "nagelstudio",
   },
   {
     slug: "olha",
@@ -92,14 +104,16 @@ export const team: TeamMember[] = [
     line: { de: "Nageldesignerin", uk: "Майстриня манікюру" },
     photo: null,
     objectPosition: "50% 20%",
+    salonkeeCategory: "nagelstudio",
   },
   {
-    slug: "kseniia",
-    name: "Kseniia",
+    slug: "kateryna",
+    name: "Kateryna",
     specialty: { de: "Nageldesign", uk: "Дизайн нігтів" },
     line: { de: "Nageldesignerin", uk: "Майстриня манікюру" },
     photo: null,
     objectPosition: "50% 20%",
+    salonkeeCategory: "nagelstudio",
   },
 ];
 

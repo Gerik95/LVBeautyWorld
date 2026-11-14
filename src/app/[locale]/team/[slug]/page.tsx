@@ -38,7 +38,7 @@ export default async function TeamMemberPage({
   const copy = t(locale);
   return (
     <div className="space-y-6 pt-4">
-      <Link href={pathFor(locale, "/team")} className="text-sm font-semibold underline-offset-4 hover:underline">
+      <Link href={pathFor(locale, "/team")} className="ui-inline text-sm font-semibold">
         ← {copy.teamAll}
       </Link>
       <TeamProfile locale={locale} member={member} />

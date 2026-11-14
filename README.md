@@ -6,7 +6,6 @@ Visiting-card website for **LV Beauty World**, a premium beauty salon in Dortmun
 
 ```bash
 npm install
-cp .env.example .env.local   # optional: MAPKIT_TOKEN
 npm run dev                  # http://localhost:4317
 ```
 
@@ -17,13 +16,15 @@ npm run build
 npm start                    # production, port 4317
 ```
 
-Apple MapKit: create a Maps JS token in Apple Developer, put it in `MAPKIT_TOKEN`. Never commit it. The map loads only after consent on the contact page. Without a token, address and route links still work.
+The contacts page embeds `https://maps.google.com/maps?q=…&output=embed` for the salon address. There is no Maps API key and no map-consent gate. The directions link is `https://www.google.com/maps/dir/?api=1&destination=…&dir_action=navigate` and does not set `origin` or `destination_place_id`. Loading the embed does not decide whether that integration is lawful.
 
 ## Where to edit
 
 | What | Path |
 | --- | --- |
-| Salon facts, address, hours, coords | `src/lib/site.ts` |
+| Salon facts, address, coords | `src/lib/site.ts` |
+| Opening hours | `src/content/schedule.ts` |
+| Directions notes (stop, parking — confirmed facts only) | `src/content/directions.ts` |
 | UI copy DE/UK | `src/content/messages.ts` |
 | Services | `src/content/services.ts` |
 | Prices (single source) | `src/content/prices.ts` |
@@ -33,7 +34,7 @@ Apple MapKit: create a Maps JS token in Apple Developer, put it in `MAPKIT_TOKEN
 | Published photos (EXIF stripped) | `public/photos/` |
 | Photo originals | `photos/originals/` |
 
-Routes live under `/de/…` and `/uk/…`. Default language is German.
+Routes live under `/de/…` and `/uk/…`. Default language is German. `src/middleware.ts` sends `/` and paths without a language to the one saved in the `lvbw-locale` cookie. The contact card is served at `/api/vcard/de` and `/api/vcard/uk`.
 
 ## Stack
 

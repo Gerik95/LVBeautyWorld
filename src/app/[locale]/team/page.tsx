@@ -21,8 +21,8 @@ export default async function TeamPage({ params }: { params: Promise<{ locale: s
       <h1 className="font-display text-4xl">{copy.teamTitle}</h1>
       <p className="max-w-2xl text-[var(--lv-muted)]">{copy.teamLead}</p>
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {team.map((member) => (
-          <TeamCard key={member.slug} locale={locale} member={member} />
+        {team.map((member, index) => (
+          <TeamCard key={member.slug} locale={locale} member={member} priority={index < 3} />
         ))}
       </div>
     </div>
