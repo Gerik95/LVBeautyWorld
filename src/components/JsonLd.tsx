@@ -1,4 +1,19 @@
+import { salonSchedule } from "@/content/schedule";
+import { formatMinutes } from "@/lib/hours";
 import { site } from "@/lib/site";
+
+const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+const openingHours = salonSchedule.week.flatMap((intervals, index) =>
+  intervals
+    .filter((interval) => interval.end > interval.start)
+    .map((interval) => ({
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: dayNames[index],
+      opens: formatMinutes(interval.start),
+      closes: formatMinutes(interval.end),
+    })),
+);
 
 export const SalonJsonLd = () => {
   const data = {
@@ -19,19 +34,7 @@ export const SalonJsonLd = () => {
       addressRegion: "Nordrhein-Westfalen",
       addressCountry: site.countryCode,
     },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: site.lat,
-      longitude: site.lng,
-    },
-    openingHoursSpecification: [
-      {
-        "@type": "OpeningHoursSpecification",
-        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-        opens: site.hours.weekdays.open,
-        closes: site.hours.weekdays.close,
-      },
-    ],
+    openingHoursSpecification: openingHours,
     sameAs: [site.instagramUrl, site.tiktokUrl, site.facebookUrl, site.bookingUrl],
   };
   return (

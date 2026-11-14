@@ -12,9 +12,6 @@ export const site = {
   district: "Hörde",
   country: "Deutschland",
   countryCode: "DE",
-  /** OSM shop node “Beauty World” at this address — not a guessed point. */
-  lat: 51.4944583,
-  lng: 7.5029356,
   phoneDisplay: "+49 176 63707383",
   phoneTel: "+4917663707383",
   email: "info@lvbeautyworld.de",
@@ -32,11 +29,6 @@ export const site = {
   supervisoryAuthority: "Ordnungsamt der Stadt Dortmund, Südwall 2–4, 44122 Dortmund",
   odrUrl: "https://ec.europa.eu/consumers/odr/",
   domain: "https://lvbeautyworld.de",
-  hours: {
-    weekdays: { open: "10:00", close: "19:00" },
-    sundayClosed: true,
-    source: "salonkee" as const,
-  },
 } as const;
 
 export const isLocale = (value: string): value is Locale =>
@@ -46,4 +38,10 @@ export const pathFor = (locale: Locale, path = "") => {
   const clean = path.startsWith("/") ? path : `/${path}`;
   if (clean === "/") return `/${locale}`;
   return `/${locale}${clean}`;
+};
+
+/** The current path in another language: `/de/prices` → `/uk/prices`. */
+export const localeSwitchPath = (pathname: string, next: Locale) => {
+  const rest = pathname.replace(/^\/(de|uk)(?=\/|$)/, "") || "/";
+  return pathFor(next, rest);
 };

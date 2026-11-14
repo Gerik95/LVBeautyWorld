@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useId, useRef, type MouseEvent as ReactMouseEvent } from "react";
 import { useRouter } from "next/navigation";
 import { t } from "@/content/messages";
 import type { TeamMember } from "@/content/team";
@@ -20,9 +20,15 @@ export const TeamModal = ({
   const closeRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const previous = useRef<HTMLElement | null>(null);
+  const restoreFocus = useRef(true);
 
   const handleClose = () => {
     router.back();
+  };
+
+  const handleDismiss = (event: ReactMouseEvent<HTMLButtonElement>) => {
+    if (event.detail > 0) restoreFocus.current = false;
+    handleClose();
   };
 
   useEffect(() => {
@@ -57,6 +63,7 @@ export const TeamModal = ({
     return () => {
       document.body.style.overflow = overflow;
       window.removeEventListener("keydown", handleKey);
+      if (!restoreFocus.current) return;
       previous.current?.focus();
     };
     // close uses router.back; mount/unmount only
@@ -69,29 +76,26 @@ export const TeamModal = ({
         type="button"
         className="absolute inset-0 bg-black/55"
         aria-label={copy.close}
-        onClick={handleClose}
+        onClick={handleDismiss}
       />
       <div
         ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="relative z-10 max-h-[94dvh] w-full overflow-y-auto rounded-t-[1.5rem] bg-paper p-5 shadow-[var(--lv-shadow)] sm:max-h-[88dvh] sm:max-w-3xl sm:rounded-[var(--radius-lg)]"
+        className="relative z-10 max-h-[94dvh] w-full overflow-y-auto rounded-t-[1.5rem] bg-[var(--lv-elev)] p-5 text-[var(--lv-ink)] shadow-[var(--lv-shadow)] sm:max-h-[88dvh] sm:max-w-3xl sm:rounded-[var(--radius-lg)]"
       >
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <p id={titleId} className="font-display text-xl">
-            {member.name}
-          </p>
+        <div className="mb-2 flex justify-end">
           <button
             ref={closeRef}
             type="button"
-            onClick={handleClose}
+            onClick={handleDismiss}
             className="min-h-11 rounded-[var(--radius-pill)] px-4 text-sm font-semibold"
           >
             {copy.close}
           </button>
         </div>
-        <TeamProfile locale={locale} member={member} />
+        <TeamProfile locale={locale} member={member} titleId={titleId} />
       </div>
     </div>
   );

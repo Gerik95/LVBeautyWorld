@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BookButton } from "@/components/BookButton";
-import { Photo } from "@/components/Photo";
+import { PriceRow } from "@/components/PriceRow";
+import { ServicePhotos } from "@/components/services/ServicePhotos";
 import { t } from "@/content/messages";
-import { formatPrice, pricesForService } from "@/content/prices";
+import { pricesForService } from "@/content/prices";
 import { getService, services } from "@/content/services";
 import { buildMetadata } from "@/lib/metadata";
+import { salonCheckout, serviceLeadId } from "@/lib/booking";
 import { isLocale, locales, pathFor } from "@/lib/site";
 
 export const generateStaticParams = () =>
@@ -22,7 +24,7 @@ export const generateMetadata = async ({
   if (!service) return {};
   return buildMetadata({
     locale,
-    title: `${service.name[locale]} | LV Beauty World`,
+    title: service.name[locale],
     description: service.short[locale],
     path: `/services/${service.id}`,
   });
@@ -39,42 +41,52 @@ export default async function ServicePage({
   if (!service) notFound();
   const copy = t(locale);
   const list = pricesForService(service.id);
+  const photos = service.gallery?.length
+    ? service.gallery
+    : [{ src: service.image, alt: service.imageAlt, objectPosition: service.objectPosition }];
 
   return (
-    <article className="space-y-6 pt-4">
-      <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-lg)] sm:aspect-[16/8]">
-        <Photo
-          src={service.image}
-          alt={service.imageAlt[locale]}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
+    <article className="service-page space-y-8 pt-4">
+      <header className="space-y-3">
+        <h1 className="font-display text-4xl">{service.name[locale]}</h1>
+        <p className="max-w-2xl text-[var(--lv-muted)]">{service.short[locale]}</p>
+      </header>
+      <div className="service-stage">
+        <ServicePhotos
+          photos={photos.map((photo) => ({
+            src: photo.src,
+            alt: photo.alt[locale],
+            objectPosition: photo.objectPosition,
+          }))}
+          prevLabel={copy.photoPrev}
+          nextLabel={copy.photoNext}
         />
+        <section className="service-offer space-y-3">
+          <h2 className="font-display text-2xl">{copy.serviceOffer}</h2>
+          <ul className="list-disc space-y-1 pl-5">
+            {service.treatments.map((item) => (
+              <li key={item.de}>{item[locale]}</li>
+            ))}
+          </ul>
+        </section>
       </div>
-      <h1 className="font-display text-4xl">{service.name[locale]}</h1>
-      <p className="text-[var(--lv-muted)]">{service.body[locale]}</p>
-      <ul className="list-disc space-y-1 pl-5">
-        {service.treatments.map((item) => (
-          <li key={item.de}>{item[locale]}</li>
-        ))}
-      </ul>
+      <section className="service-story space-y-3">
+        <h2 className="font-display text-2xl">{copy.serviceStory}</h2>
+        <p>{service.body[locale]}</p>
+      </section>
       <section className="space-y-3">
         <h2 className="font-display text-2xl">{copy.nav.prices}</h2>
         <p className="text-sm text-[var(--lv-muted)]">{copy.priceDisclaimer}</p>
-        <ul className="divide-y divide-[var(--lv-line)] overflow-x-hidden rounded-[var(--radius-md)] bg-[var(--lv-elev)]">
+        <ul className="price-menu divide-y divide-[var(--lv-line)] overflow-x-hidden rounded-[var(--radius-md)] bg-[var(--lv-elev)]">
           {list.map((item) => (
-            <li key={item.id} className="flex items-baseline justify-between gap-4 px-4 py-3 text-sm">
-              <span className="min-w-0 break-words">{item[locale]}</span>
-              <span className="shrink-0 font-semibold tabular-nums">{formatPrice(locale, item)}</span>
-            </li>
+            <PriceRow key={item.id} locale={locale} item={item} menu />
           ))}
         </ul>
-        <Link href={pathFor(locale, "/prices")} className="inline-block text-sm font-semibold underline-offset-4 hover:underline">
+        <Link href={pathFor(locale, "/prices")} className="ui-inline text-sm font-semibold">
           {copy.pricesLink}
         </Link>
       </section>
-      <BookButton locale={locale} />
+      <BookButton locale={locale} href={salonCheckout(serviceLeadId[service.id])} />
     </article>
   );
-}
+};

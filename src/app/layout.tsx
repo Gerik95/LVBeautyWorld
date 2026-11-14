@@ -3,7 +3,11 @@ import type { ReactNode } from "react";
 import { ThemeScript } from "@/components/ThemeScript";
 import { cormorant, manrope } from "@/lib/fonts";
 import { site } from "@/lib/site";
+import { getActiveSkin, resolveEffects } from "@/skins";
 import "./globals.css";
+
+const skin = getActiveSkin();
+const effects = resolveEffects(skin);
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.domain),
@@ -11,7 +15,7 @@ export const metadata: Metadata = {
     default: site.name,
     template: `%s | ${site.name}`,
   },
-  description: "Premium-Schönheitssalon in Dortmund-Hörde.",
+  description: "Schönheitssalon in Dortmund-Hörde.",
   icons: {
     icon: [
       { url: "/brand/favicon-32.png", sizes: "32x32", type: "image/png" },
@@ -25,8 +29,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#efece6" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b0b0c" },
+    { media: "(prefers-color-scheme: light)", color: "#f3f3f4" },
+    { media: "(prefers-color-scheme: dark)", color: "#070708" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -35,7 +39,14 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="de" suppressHydrationWarning>
+    <html
+      lang="de"
+      data-skin={skin.id}
+      data-photo={effects.photoGrayscale ? "mono" : "color"}
+      data-book={effects.bookHover ? "on" : "off"}
+      data-reveal={effects.reveal ? "on" : "off"}
+      suppressHydrationWarning
+    >
       <head>
         <ThemeScript />
       </head>
