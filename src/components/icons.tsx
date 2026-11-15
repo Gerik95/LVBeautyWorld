@@ -94,3 +94,10 @@ export const IconContactAdd = ({ className }: IconProps) => (
     <path className="contact-add-plus" d="M19.4 9.2v5.2M16.8 11.8H22" />
   </svg>
 );
+
+/** Thin chevron for steppers. Points right; `flip` points left. */
+export const IconChevron = ({ flip = false }: { flip?: boolean }) => (
+  <svg viewBox="0 0 16 16" aria-hidden="true" style={flip ? { transform: "scaleX(-1)" } : undefined}>
+    <path d="M6.2 3.6 10.6 8l-4.4 4.4" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
