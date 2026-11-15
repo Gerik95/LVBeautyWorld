@@ -1162,15 +1162,10 @@ html[data-theme="dark"] .dock-lens {
   padding: 0.25rem 1.15rem 1rem;
 }
 
-.service-gallery-frame,
 .team-photo {
   position: relative;
   overflow: hidden;
   background: #161618;
-}
-
-.service-gallery-frame {
-  aspect-ratio: 4 / 3;
 }
 
 .team-photo {
@@ -1180,192 +1175,6 @@ html[data-theme="dark"] .dock-lens {
   border-radius: var(--radius-lg);
 }
 
-.service-stage {
-  display: grid;
-  align-items: start;
-  gap: 1.75rem;
-}
-
-.service-photos {
-  min-width: 0;
-  align-self: start;
-}
-
-.service-photos .service-gallery-frame {
-  height: auto;
-}
-
-.service-slide {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 640ms ease;
-}
-
-.service-slide.is-active {
-  opacity: 1;
-}
-
-.service-photos.is-manual .service-gallery-frame,
-.service-photos.is-manual .service-gallery-frame * {
-  touch-action: pan-y;
-}
-
-.service-photos.is-manual .service-gallery-frame {
-  user-select: none;
-}
-
-.service-photos.is-manual img {
-  -webkit-user-drag: none;
-}
-
-.service-edge {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  z-index: 2;
-  width: 34%;
-  border: 0;
-  padding: 0;
-  background: transparent;
-  pointer-events: none;
-  color: #fff;
-  font-family: var(--font-cormorant), "Times New Roman", serif;
-  font-size: 1.05rem;
-  font-weight: 400;
-  letter-spacing: 0.18em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.service-edge-prev {
-  left: 0;
-}
-
-.service-edge-next {
-  right: 0;
-}
-
-.service-edge::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity 420ms ease;
-}
-
-.service-edge-prev::before {
-  background: linear-gradient(90deg, rgba(8, 8, 10, 0.42), transparent 82%);
-}
-
-.service-edge-next::before {
-  background: linear-gradient(270deg, rgba(8, 8, 10, 0.42), transparent 82%);
-}
-
-.service-edge span {
-  position: absolute;
-  top: 50%;
-  opacity: 0;
-  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.45);
-  transition: opacity 420ms ease;
-}
-
-.service-edge-prev span {
-  left: 1.05rem;
-  transform: translateY(-50%);
-}
-
-.service-edge-next span {
-  right: 1.05rem;
-  transform: translateY(-50%);
-}
-
-.service-edge:focus-visible {
-  outline: none;
-}
-
-.service-edge:focus-visible::before,
-.service-edge:focus-visible span {
-  opacity: 1;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .service-gallery-frame[data-edge="prev"],
-  .service-gallery-frame[data-edge="next"] {
-    cursor: pointer;
-  }
-
-  .service-gallery-frame[data-edge="prev"] .service-edge-prev::before,
-  .service-gallery-frame[data-edge="prev"] .service-edge-prev span,
-  .service-gallery-frame[data-edge="next"] .service-edge-next::before,
-  .service-gallery-frame[data-edge="next"] .service-edge-next span {
-    opacity: 1;
-  }
-}
-
-.service-dots {
-  display: flex;
-  justify-content: center;
-  gap: 0.15rem;
-  margin: 0.65rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.service-dot {
-  display: grid;
-  width: 1.15rem;
-  height: 1.15rem;
-  place-items: center;
-  border: 0;
-  border-radius: 999px;
-  padding: 0;
-  background: transparent;
-  cursor: pointer;
-}
-
-.service-dot::before {
-  content: "";
-  width: 0.38rem;
-  height: 0.38rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--lv-ink) 28%, transparent);
-}
-
-.service-dot.is-active::before {
-  background: var(--lv-ink);
-}
-
-.service-dot:focus-visible {
-  outline: 2px solid var(--lv-ink);
-  outline-offset: 2px;
-}
-
-.service-story {
-  max-width: 42rem;
-}
-
-@media (min-width: 860px) {
-  .service-stage {
-    grid-template-columns: minmax(0, 1.15fr) minmax(15rem, 0.85fr);
-    column-gap: clamp(1.75rem, 3.5vw, 3rem);
-  }
-
-  .service-story {
-    max-width: 50rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .service-slide,
-  .service-edge::before,
-  .service-edge span {
-    transition: none;
-  }
-}
-
-.service-gallery-frame,
 .team-card {
   height: 100%;
   overflow: hidden;
@@ -1377,6 +1186,536 @@ html[data-theme="dark"] .dock-lens {
 .team-card a:focus,
 .team-card a:focus-visible {
   outline: none;
+}
+
+/* ——— service detail page ———
+   Editorial spread: kicker, display title and lead beside one tall framed
+   photo. Then numbered treatments and the method as large serif text.
+   The price list below keeps the shared price-menu styles. */
+@keyframes sp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes sp-appear {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sp-settle {
+  from {
+    transform: scale(1.07);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes sp-progress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.sp {
+  padding: clamp(1.25rem, 4vh, 2.5rem) 0 1rem;
+}
+
+.sp-hero {
+  display: grid;
+  align-items: center;
+  gap: 2.4rem;
+}
+
+.sp-copy {
+  min-width: 0;
+}
+
+.sp-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0;
+  color: var(--lv-muted);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.sp-kicker-rule {
+  width: 2.4rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+.sp-kicker-count {
+  min-width: 4.4em;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+/* Back to home and the service pager share one quiet control: a hairline
+   circle with a thin glyph. */
+.sp-back {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0 0 1.4rem -0.1rem;
+  color: var(--lv-muted);
+  font-size: 0.82rem;
+  font-weight: 560;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: color var(--ui-hover-ms) ease;
+}
+
+.sp-back-icon,
+.sp-step {
+  display: grid;
+  flex: none;
+  width: 2.3rem;
+  height: 2.3rem;
+  place-items: center;
+  border: 1px solid var(--lv-line);
+  border-radius: 999px;
+  color: var(--lv-ink);
+  transition:
+    border-color var(--ui-hover-ms) ease,
+    background-color var(--ui-hover-ms) ease,
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sp-back-icon svg,
+.sp-step svg {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.sp-pager {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.sp-step {
+  position: relative;
+  text-decoration: none;
+}
+
+/* 44px touch target around the 2.3rem circle. */
+.sp-step::after {
+  content: "";
+  position: absolute;
+  inset: -0.2rem;
+}
+
+.sp-back:active .sp-back-icon,
+.sp-step:active {
+  transform: scale(var(--ui-press-scale));
+}
+
+.sp-title {
+  margin: 1.1rem 0 0;
+  font-size: calc(clamp(2.9rem, 9vw, 5.1rem) * var(--sp-fit-narrow, 1));
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 0.92;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+
+.sp-lead {
+  max-width: 26rem;
+  margin: 1.6rem 0 0;
+  padding-top: 1.3rem;
+  border-top: 1px solid var(--lv-line);
+  color: var(--lv-muted);
+  font-size: clamp(1.02rem, 1.5vw, 1.12rem);
+  line-height: 1.55;
+}
+
+.sp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem 1.15rem;
+  margin-top: 1.8rem;
+}
+
+/* Photo. In the dark theme a faint halo lifts the frame from the background,
+   like the light around the mark. */
+.sp-photos {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-width: 0;
+}
+
+html[data-theme="dark"] .sp-photos::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  inset: -14% -12%;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.075), transparent);
+}
+
+.sp-frame {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 1px solid var(--svc-frame);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--lv-ink) 5%, var(--lv-elev));
+  box-shadow: var(--svc-photo-shadow);
+}
+
+.sp-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 900ms ease;
+}
+
+.sp-slide.is-active {
+  opacity: 1;
+}
+
+.sp-frame-veil {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+.sp-photos.is-manual .sp-frame-veil {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.12) 24%, transparent 40%);
+}
+
+.sp-frame-bar {
+  position: absolute;
+  z-index: 3;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 0.9rem 0.9rem 1.1rem;
+  color: #fff;
+}
+
+.sp-count {
+  font-size: 0.74rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.18em;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+}
+
+.sp-arrows {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.sp-arrow {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition:
+    background-color 200ms ease,
+    transform 200ms ease;
+}
+
+.sp-arrow svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.sp-arrow:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.sp-arrow:active {
+  transform: scale(var(--ui-press-scale));
+}
+
+.sp-photos.is-manual .sp-frame,
+.sp-photos.is-manual .sp-frame * {
+  touch-action: pan-y;
+}
+
+.sp-photos.is-manual .sp-frame {
+  user-select: none;
+}
+
+.sp-photos.is-manual img {
+  -webkit-user-drag: none;
+}
+
+/* Progress: one hairline per photo. The current one fills over the
+   rotation time and stands still while the visitor holds the frame. */
+.sp-progress {
+  display: flex;
+  gap: 0.45rem;
+  margin-top: 0.85rem;
+}
+
+.sp-tick {
+  position: relative;
+  flex: 1 1 0;
+  height: 1.5rem;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.sp-tick::before,
+.sp-tick-fill {
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: calc(50% - 0.5px);
+  height: 1px;
+}
+
+.sp-tick::before {
+  content: "";
+  background: var(--lv-line);
+}
+
+.sp-tick-fill {
+  background: var(--lv-ink);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.sp-tick.is-active .sp-tick-fill {
+  transform: scaleX(1);
+}
+
+.sp-tick:focus-visible {
+  outline: 2px solid var(--lv-ink);
+  outline-offset: 2px;
+}
+
+/* Chapters */
+.sp-chapter,
+.sp-prices {
+  margin-top: clamp(4rem, 10vh, 6.5rem);
+  padding-top: 1.15rem;
+  border-top: 1px solid var(--lv-line);
+}
+
+.sp-chapter {
+  display: grid;
+  gap: 1.4rem;
+}
+
+.sp-chapter-title {
+  max-width: 11ch;
+  margin: 0;
+  font-size: clamp(2.1rem, 4.6vw, 3.1rem);
+  font-weight: 500;
+  line-height: 0.95;
+}
+
+.sp-offer {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sp-offer-item {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 1.05rem 0;
+  border-bottom: 1px solid var(--lv-line);
+}
+
+.sp-offer-item:first-child {
+  padding-top: 0.3rem;
+}
+
+.sp-offer-index {
+  color: var(--lv-muted);
+  font-size: 0.72rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.12em;
+}
+
+.sp-offer-name {
+  font-family: var(--font-cormorant), "Times New Roman", serif;
+  font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  overflow-wrap: break-word;
+}
+
+.sp-story {
+  max-width: 36rem;
+  margin: 0;
+  font-family: var(--font-cormorant), "Times New Roman", serif;
+  font-size: clamp(1.32rem, 2.2vw, 1.62rem);
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+.sp-prices {
+  scroll-margin-top: 1.5rem;
+}
+
+.sp-prices-note {
+  max-width: 38rem;
+  margin: 1rem 0 1.5rem;
+  color: var(--lv-muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.sp-prices > .price-menu + a {
+  margin-top: 0.85rem;
+}
+
+.sp-book-end {
+  margin-top: 2.25rem;
+}
+
+@media (min-width: 860px) {
+  .sp-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+    column-gap: clamp(2.5rem, 5.5vw, 4.75rem);
+    min-height: min(44rem, calc(100dvh - var(--topbar-h) - var(--nav-h) - 3rem));
+  }
+
+  .sp-title {
+    font-size: calc(clamp(3.4rem, 5.6vw, 5.1rem) * var(--sp-fit, 1));
+  }
+
+  .sp-photos {
+    width: min(100%, calc((100dvh - var(--topbar-h) - var(--nav-h) - 4rem) * 0.8));
+    justify-self: end;
+  }
+
+  .sp-chapter {
+    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+    column-gap: clamp(2.5rem, 5.5vw, 4.75rem);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sp-frame[data-edge="prev"],
+  .sp-frame[data-edge="next"] {
+    cursor: pointer;
+  }
+
+  .sp-arrow:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .sp-back:hover {
+    color: var(--lv-ink);
+  }
+
+  .sp-back:hover .sp-back-icon,
+  .sp-step:hover {
+    border-color: color-mix(in srgb, var(--lv-ink) 42%, transparent);
+    background: var(--ui-hover-bg);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .sp-back:hover .sp-back-icon {
+    transform: translateX(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sp-copy > * {
+    animation: sp-rise 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .sp-copy > :nth-child(2) {
+    animation-delay: 90ms;
+  }
+
+  .sp-copy > :nth-child(3) {
+    animation-delay: 180ms;
+  }
+
+  .sp-copy > :nth-child(4) {
+    animation-delay: 270ms;
+  }
+
+  .sp-copy > :nth-child(5) {
+    animation-delay: 360ms;
+  }
+
+  .sp-photos {
+    animation: sp-appear 1100ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both;
+  }
+
+  .sp-slide.is-active .photo-hit {
+    animation: sp-settle 2600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .sp-photos:not(.is-hold) .sp-tick.is-active .sp-tick-fill {
+    animation: sp-progress var(--sp-rotate, 8000ms) linear both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sp-slide,
+  .sp-arrow {
+    transition: none;
+  }
 }
 
 .team-card .team-photo {

@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from "react";
 import { Photo } from "@/components/Photo";
+import { IconChevron } from "@/components/icons";
 
 const ROTATE_MS = 8000;
 const AXIS_LOCK = 8;
@@ -151,10 +152,16 @@ export const ServicePhotos = ({ photos, prevLabel, nextLabel }: ServicePhotosPro
 
   if (count === 0) return null;
 
+  const counter = `${String(active + 1).padStart(2, "0")} / ${String(count).padStart(2, "0")}`;
+
   return (
-    <div className={manual ? "service-photos is-manual" : "service-photos"} onKeyDown={handleKeyDown}>
+    <div
+      className={["sp-photos", manual && "is-manual", hold && "is-hold"].filter(Boolean).join(" ")}
+      style={{ "--sp-rotate": `${ROTATE_MS}ms` } as CSSProperties}
+      onKeyDown={handleKeyDown}
+    >
       <div
-        className="service-gallery-frame"
+        className="sp-frame"
         onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
         onPointerDown={handlePointerDown}
@@ -165,33 +172,39 @@ export const ServicePhotos = ({ photos, prevLabel, nextLabel }: ServicePhotosPro
         {photos.map((photo, photoIndex) => {
           const selected = photoIndex === active;
           return (
-            <div key={photo.src} className={selected ? "service-slide is-active" : "service-slide"} aria-hidden={selected ? undefined : true}>
+            <div key={photo.src} className={selected ? "sp-slide is-active" : "sp-slide"} aria-hidden={selected ? undefined : true}>
               <Photo
                 src={photo.src}
                 alt={photo.alt}
                 stayColor
                 fill
                 priority={photoIndex === 0}
-                sizes="(max-width: 860px) 100vw, 36rem"
+                sizes="(max-width: 860px) 100vw, 34rem"
                 className="object-cover"
                 style={photo.objectPosition ? { objectPosition: photo.objectPosition } : undefined}
               />
             </div>
           );
         })}
+        <span className="sp-frame-veil" aria-hidden="true" />
         {manual ? (
-          <>
-            <button type="button" className="service-edge service-edge-prev" aria-label={prevLabel} tabIndex={0} onClick={() => step(-1)}>
-              <span aria-hidden="true">{prevLabel}</span>
-            </button>
-            <button type="button" className="service-edge service-edge-next" aria-label={nextLabel} tabIndex={0} onClick={() => step(1)}>
-              <span aria-hidden="true">{nextLabel}</span>
-            </button>
-          </>
+          <div className="sp-frame-bar">
+            <span className="sp-count" aria-live="polite">
+              {counter}
+            </span>
+            <span className="sp-arrows">
+              <button type="button" className="sp-arrow" aria-label={prevLabel} onClick={() => step(-1)}>
+                <IconChevron flip />
+              </button>
+              <button type="button" className="sp-arrow" aria-label={nextLabel} onClick={() => step(1)}>
+                <IconChevron />
+              </button>
+            </span>
+          </div>
         ) : null}
       </div>
       {manual ? (
-        <div className="service-dots" role="tablist" aria-label={photos[active]?.alt}>
+        <div className="sp-progress" role="tablist" aria-label={photos[active]?.alt}>
           {photos.map((photo, photoIndex) => {
             const selected = photoIndex === active;
             return (
@@ -199,12 +212,13 @@ export const ServicePhotos = ({ photos, prevLabel, nextLabel }: ServicePhotosPro
                 key={photo.src}
                 type="button"
                 role="tab"
-                className={selected ? "service-dot is-active" : "service-dot"}
+                className={selected ? "sp-tick is-active" : photoIndex < active ? "sp-tick is-past" : "sp-tick"}
                 aria-selected={selected}
                 aria-label={photo.alt}
-                tabIndex={0}
                 onClick={() => setIndex(photoIndex)}
-              />
+              >
+                <span key={selected ? `on-${index}-${hold ? "hold" : "run"}` : "off"} className="sp-tick-fill" />
+              </button>
             );
           })}
         </div>
