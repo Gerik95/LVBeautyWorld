@@ -1,9 +1,11 @@
 import { defaultSkin } from "./default";
 import type { EffectFlags, SkinDefinition } from "./types";
 import { skinConfig } from "./config";
+import { winterSkin } from "./winter";
 
 export const skinRegistry: Record<string, SkinDefinition> = {
   default: defaultSkin,
+  winter: winterSkin,
 };
 
 export const getSkin = (id: string | null | undefined): SkinDefinition => {

@@ -1,5 +1,5 @@
-import { INITIAL_THEME_KEY, SERVICE_SEEN_KEY, THEME_KEY } from "@/lib/storage";
-import { getActiveSkin, resolveEffects } from "@/skins";
+import { INITIAL_THEME_KEY, SERVICE_SEEN_KEY, SKIN_KEY, THEME_KEY } from "@/lib/storage";
+import { getActiveSkin, optInSkins, resolveEffects } from "@/skins";
 
 const effects = resolveEffects(getActiveSkin());
 const skinId = getActiveSkin().id;
@@ -15,6 +15,7 @@ const source = `(function(){try{
   e.dataset.theme=theme;
   e.style.colorScheme=theme;
   e.dataset.skin=${JSON.stringify(skinId)};
+  try{var s=localStorage.getItem(${JSON.stringify(SKIN_KEY)});if(${JSON.stringify(optInSkins)}.indexOf(s)>=0)e.dataset.skin=s;}catch(err){}
   var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(!reduce) e.classList.add('js');
   var fine=window.matchMedia('(hover: hover) and (pointer: fine)').matches;

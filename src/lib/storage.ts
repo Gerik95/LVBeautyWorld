@@ -10,3 +10,5 @@ export type ThemePref = "system" | "light" | "dark";
 
 export const isThemePref = (value: string | null): value is ThemePref =>
   value === "system" || value === "light" || value === "dark";
+/** Seasonal skin the visitor switched on (easter egg or settings). Absent means the configured skin. */
+export const SKIN_KEY = "lvbw-skin";

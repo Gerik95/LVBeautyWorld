@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { getSkin } from "@/skins";
+import { getSkin, readOptInSkin } from "@/skins";
 import { THEME_KEY, isThemePref, type ThemePref } from "@/lib/storage";
 
 const readPref = (): ThemePref => {
@@ -27,6 +27,9 @@ const applyTheme = (pref: ThemePref) => {
 export const ThemeRuntime = () => {
   useEffect(() => {
     const root = document.documentElement;
+    // The boot script does not run on Next's error shell (404); restore an opted-in skin here too.
+    const optIn = readOptInSkin();
+    if (optIn) root.dataset.skin = optIn;
     const resolvedSkin = getSkin(root.dataset.skin);
     if (resolvedSkin.id !== root.dataset.skin) root.dataset.skin = resolvedSkin.id;
 

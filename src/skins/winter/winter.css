@@ -1,0 +1,468 @@
+/* ——— winter skin ———
+   Opt-in only: three taps on the logo, a phone shake or the settings page.
+   Every rule is scoped to html[data-skin="winter"], except the generic toast.
+   Decor never takes clicks and never covers text. See docs/SKINS.md. */
+
+/* Snow in the hero: one canvas over the beam, under the stage. */
+.winter-snow {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Fireworks share the hero layer, under the stage text. */
+.winter-fireworks {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Snow over the home page, behind the content (body turns transparent so the
+   canvas shows between the page colour on <html> and the content). */
+.winter-page-snow {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+html[data-skin="winter"] body {
+  background: transparent;
+}
+
+/* Caps on the mark. Taller than the mark so knocked-off crumbs can fall. */
+.winter-logo-snow {
+  position: absolute;
+  z-index: 3;
+  left: -12%;
+  top: -12%;
+  width: 124%;
+  height: 156%;
+  pointer-events: none;
+}
+
+/* Snow globe: the mark sways once, like a shaken glass ball. */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-skin="winter"] .logo-slot.winter-globe {
+    animation: winter-globe 760ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  }
+}
+
+@keyframes winter-globe {
+  0%,
+  100% {
+    transform: none;
+  }
+  18% {
+    transform: translate3d(-1.2%, 0, 0) rotate(-2.2deg);
+  }
+  38% {
+    transform: translate3d(1.1%, 0, 0) rotate(1.8deg);
+  }
+  58% {
+    transform: translate3d(-0.6%, 0, 0) rotate(-1deg);
+  }
+  78% {
+    transform: translate3d(0.3%, 0, 0) rotate(0.4deg);
+  }
+}
+
+/* ——— glass dock: frost with a thawed window under the lens ——— */
+.winter-frost {
+  position: absolute;
+  inset: 0;
+  --thaw-l: -999px;
+  --thaw-r: -999px;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    #000 calc(var(--thaw-l) - 12px),
+    rgba(0, 0, 0, 0.12) calc(var(--thaw-l) + 6px),
+    rgba(0, 0, 0, 0.12) calc(var(--thaw-r) - 6px),
+    #000 calc(var(--thaw-r) + 12px)
+  );
+  mask-image: linear-gradient(
+    90deg,
+    #000 calc(var(--thaw-l) - 12px),
+    rgba(0, 0, 0, 0.12) calc(var(--thaw-l) + 6px),
+    rgba(0, 0, 0, 0.12) calc(var(--thaw-r) - 6px),
+    #000 calc(var(--thaw-r) + 12px)
+  );
+}
+
+.winter-frost canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .winter-frost {
+    animation: winter-frost-in 1400ms ease-out both;
+  }
+}
+
+@keyframes winter-frost-in {
+  from {
+    opacity: 0;
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    filter: none;
+  }
+}
+
+/* ——— home gallery: frost instead of grey, the colour wave thaws it ———
+   Order inside the stack: grey photo, frost, colour photo. Where the colour
+   layer is masked (the wave has not reached), the frost shows. */
+html[data-skin="winter"] .svc-photo-stack {
+  isolation: isolate;
+}
+
+html[data-skin="winter"] .svc-photo-mono {
+  z-index: 0;
+}
+
+html[data-skin="winter"] .svc-photo-color {
+  z-index: 2;
+}
+
+html[data-skin="winter"] .svc-photo-stack::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image: var(--winter-frost-glass);
+  background-size: 100% 100%;
+  -webkit-backdrop-filter: var(--winter-frost-blur);
+  backdrop-filter: var(--winter-frost-blur);
+  opacity: var(--winter-frost-strength);
+  transition: opacity var(--svc-photo-ms) ease;
+}
+
+/* In winter the photo stays in colour: frost, not grey, is what thaws. */
+html[data-skin="winter"] .svc-frame[data-wave="on"] .svc-photo-mono,
+html[data-skin="winter"][data-svc-wave="on"] .svc-frame:not([data-wave="on"]) .svc-photo-mono {
+  filter: none;
+}
+
+html[data-skin="winter"][data-photo="mono"] .photo-treat-img {
+  filter: none;
+}
+
+/* Without the wave (no mask support) the hover itself thaws the frost. */
+@media (hover: hover) and (pointer: fine) {
+  html[data-skin="winter"] .svc-frame:not([data-wave="on"]):hover .svc-photo-stack::before,
+  html[data-skin="winter"] .svc-frame:not([data-wave="on"]):focus-within .svc-photo-stack::before {
+    opacity: 0;
+  }
+}
+
+/* ——— booking: one sheen per hover, a glint where the beam lands ——— */
+html[data-skin="winter"] a.book-btn {
+  --winter-sheen: rgba(255, 255, 255, 0.34);
+  background-image: linear-gradient(105deg, transparent 40%, var(--winter-sheen) 50%, transparent 60%);
+  background-repeat: no-repeat;
+  background-size: 260% 100%;
+  background-position: 130% 0;
+}
+
+html[data-skin="winter"][data-theme="dark"] a.book-btn {
+  --winter-sheen: rgba(150, 190, 240, 0.45);
+}
+
+html[data-skin="winter"] a.book-btn .book-arrow::after {
+  content: "";
+  position: absolute;
+  top: -0.55em;
+  right: -0.65em;
+  width: 0.62em;
+  height: 0.62em;
+  background: #fff;
+  clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 240ms ease;
+}
+
+html[data-skin="winter"][data-theme="dark"] a.book-btn .book-arrow::after {
+  background: #6f9ee0;
+}
+
+html[data-skin="winter"][data-theme="dark"] a.book-btn[data-beam-target] .book-arrow::after {
+  opacity: var(--beam-hit);
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html[data-skin="winter"] a.book-btn {
+    transition:
+      transform var(--ui-hover-ms) ease,
+      box-shadow var(--ui-hover-ms) ease,
+      background-position 0s linear 900ms;
+  }
+
+  html[data-skin="winter"] a.book-btn:hover {
+    background-position: -30% 0;
+    transition:
+      transform var(--ui-hover-ms) ease,
+      box-shadow var(--ui-hover-ms) ease,
+      background-position 900ms cubic-bezier(0.3, 0.6, 0.3, 1);
+  }
+
+  html[data-skin="winter"] a.book-btn:hover .book-arrow::after {
+    opacity: 1;
+  }
+
+  html[data-skin="winter"] a.book-btn .book-arrow::after {
+    animation: winter-glint 1.8s ease-in-out infinite;
+  }
+}
+
+@keyframes winter-glint {
+  0%,
+  100% {
+    transform: scale(0.7) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.08) rotate(45deg);
+  }
+}
+
+/* ——— footer: snow on the ledge, deeper the further you scroll ——— */
+html[data-skin="winter"] .site-footer {
+  position: relative;
+}
+
+.winter-footer-drift {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% - 1px);
+  display: block;
+  width: 100%;
+  height: 46px;
+  pointer-events: none;
+}
+
+/* ——— frozen glass ———
+   One generated texture (--winter-frost-img: ice ferns from the edges, rime,
+   glints) over a blurred, paled photo. Thaws from the middle on hover, or on
+   touch for the photo nearest the centre of the screen. */
+@property --winter-thaw {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: -45%;
+}
+
+@property --frost {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+@property --open {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+html[data-skin="winter"] {
+  --winter-frost-glass:
+    var(--winter-frost-img, none),
+    radial-gradient(120% 100% at 50% 46%, rgba(228, 238, 252, 0.04) 22%, rgba(238, 244, 253, 0.5) 100%),
+    linear-gradient(rgba(206, 222, 246, 0.2), rgba(206, 222, 246, 0.2));
+  --winter-frost-blur: blur(2.4px) brightness(1.04) saturate(0.8);
+  --winter-frost-strength: 0.7;
+}
+
+/* Phones: no backdrop blur. It repaints on every scroll frame and stutters. */
+@media (hover: none), (pointer: coarse) {
+  html[data-skin="winter"] {
+    --winter-frost-blur: none;
+    --winter-frost-strength: 0.62;
+  }
+}
+
+html[data-skin="winter"] .photo-hit:not(.absolute) {
+  position: relative;
+}
+
+html[data-skin="winter"][data-photo="mono"] .photo-hit:not(.photo-stay)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  background-image: var(--winter-frost-glass);
+  background-size: 100% 100%;
+  -webkit-backdrop-filter: var(--winter-frost-blur);
+  backdrop-filter: var(--winter-frost-blur);
+  opacity: var(--winter-frost-strength);
+  --winter-thaw: -45%;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent var(--winter-thaw), #000 calc(var(--winter-thaw) + 45%));
+  mask-image: radial-gradient(circle at 50% 50%, transparent var(--winter-thaw), #000 calc(var(--winter-thaw) + 45%));
+  transition: --winter-thaw 2600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (hover: hover) {
+  html[data-skin="winter"][data-photo="mono"] .photo-hit:not(.photo-stay):hover::after,
+  html[data-skin="winter"][data-photo="mono"] .photo-hit:not(.photo-stay):focus-within::after,
+  html[data-skin="winter"][data-photo="mono"] a:hover .photo-hit:not(.photo-stay)::after,
+  html[data-skin="winter"][data-photo="mono"] a:focus-visible .photo-hit:not(.photo-stay)::after {
+    --winter-thaw: 150%;
+    transition-duration: 1500ms;
+  }
+}
+
+html[data-skin="winter"][data-photo="mono"] .photo-hit.is-lit:not(.photo-stay)::after {
+  --winter-thaw: 150%;
+  transition-duration: 1500ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-skin="winter"][data-photo="mono"] .photo-hit:not(.photo-stay)::after {
+    transition: none;
+  }
+}
+
+/* ——— opening hours: frozen while closed, thaws after opening ——— */
+html[data-skin="winter"] .hours-panel {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.winter-hours-frost {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  border-radius: inherit;
+  transition:
+    --frost 2600ms ease,
+    --open 2600ms ease;
+}
+
+.winter-hours-frost[data-live] {
+  transition: none;
+}
+
+.winter-hours-warm,
+.winter-hours-ice,
+.winter-hours-haze,
+.winter-hours-crystals {
+  position: absolute;
+  inset: 0;
+}
+
+/* Warm light inside once the glass clears: people, lamps, tea. */
+.winter-hours-warm {
+  background: radial-gradient(ellipse 80% 70% at 50% 62%, rgba(255, 176, 98, 0.16), transparent 72%);
+  opacity: calc((1 - var(--frost)) * var(--open));
+}
+
+/* Thaws from the middle outward, frosts from the rim inward. */
+.winter-hours-ice {
+  -webkit-mask-image: radial-gradient(
+    ellipse 72% 68% at 50% 46%,
+    transparent calc((1 - var(--frost)) * 150% - 42%),
+    #000 calc((1 - var(--frost)) * 150%)
+  );
+  mask-image: radial-gradient(
+    ellipse 72% 68% at 50% 46%,
+    transparent calc((1 - var(--frost)) * 150% - 42%),
+    #000 calc((1 - var(--frost)) * 150%)
+  );
+}
+
+.winter-hours-haze {
+  background: radial-gradient(ellipse 85% 80% at 50% 48%, rgba(222, 233, 249, 0.04), rgba(222, 233, 249, 0.4) 100%);
+}
+
+/* The texture is white; drawn as a mask it takes a cold blue on the white card. */
+.winter-hours-crystals {
+  background-color: rgba(104, 138, 192, 0.38);
+  -webkit-mask-image: var(--winter-frost-img, none);
+  mask-image: var(--winter-frost-img, none);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+
+html[data-theme="dark"] .winter-hours-haze {
+  background: radial-gradient(ellipse 85% 80% at 50% 48%, rgba(196, 214, 242, 0.02), rgba(196, 214, 242, 0.14) 100%);
+}
+
+html[data-theme="dark"] .winter-hours-crystals {
+  background-color: rgba(222, 234, 255, 0.4);
+}
+
+/* ——— toast after the easter egg ——— */
+.skin-toast-wrap {
+  position: fixed;
+  z-index: 45;
+  inset-inline: 0;
+  bottom: calc(var(--nav-h) + var(--safe-bottom) + 0.9rem);
+  display: flex;
+  justify-content: center;
+  padding-inline: 1rem;
+  pointer-events: none;
+}
+
+.skin-toast {
+  max-width: 26rem;
+  margin: 0;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--lv-glass-edge);
+  border-radius: var(--radius-pill);
+  background: var(--lv-glass);
+  color: var(--lv-ink);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  text-align: center;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .skin-toast {
+    animation: skin-toast-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@keyframes skin-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media print {
+  .winter-snow,
+  .winter-logo-snow,
+  .winter-frost,
+  .skin-toast-wrap,
+  .winter-fireworks,
+  .winter-page-snow,
+  .winter-footer-drift,
+  .winter-hours-frost,
+  html[data-skin="winter"] .photo-hit::after,
+  html[data-skin="winter"] .svc-photo-stack::before {
+    display: none !important;
+  }
+}
