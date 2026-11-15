@@ -95,6 +95,11 @@ export const messages = {
     consentEssential:
       "Notwendig: Sprache und Darstellung speichern wir auf Ihrem Gerät. Keine Reichweitenmessung.",
     settingsLegal: "Dokumente",
+    settingsWinter: "Winterzauber",
+    winterNote: "Schnee im Licht, Frost auf dem Glas, Glanz auf dem Logo. Gespeichert nur auf diesem Gerät.",
+    winterOn: "An",
+    winterOff: "Aus",
+    winterToast: "Winterzauber ist an. Ausschalten in den Einstellungen.",
     notFound: "Seite nicht gefunden",
     lostKicker: "Fehler 404",
     lostLine1: "Diese Seite",
@@ -218,6 +223,11 @@ export const messages = {
     consentEssential:
       "Мову й вигляд сайту зберігаємо лише на вашому пристрої. Лічильників відвідувань і реклами немає.",
     settingsLegal: "Документи",
+    settingsWinter: "Зимова магія",
+    winterNote: "Сніг у світлі, іній на склі, блиск на логотипі. Зберігається лише на цьому пристрої.",
+    winterOn: "Увімк.",
+    winterOff: "Вимк.",
+    winterToast: "Зимову магію ввімкнено. Вимкнути можна в налаштуваннях.",
     notFound: "Такої сторінки немає",
     lostKicker: "Помилка 404",
     lostLine1: "Такої сторінки",

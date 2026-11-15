@@ -7,7 +7,9 @@ import type { Locale } from "@/lib/site";
 import { BottomNav } from "./BottomNav";
 import { PhotoTone } from "./PhotoTone";
 import { RevealObserver } from "./RevealObserver";
+import { SiteDecorSlot } from "./SiteDecorSlot";
 import { SiteFooter } from "./SiteFooter";
+import { SkinEgg } from "./SkinEgg";
 import { ThemeRuntime } from "./ThemeRuntime";
 import { TopBar } from "./TopBar";
 
@@ -34,6 +36,8 @@ export const AppChrome = ({
       <RevealObserver />
       <PhotoTone />
       <ThemeRuntime />
+      <SkinEgg locale={locale} />
+      <SiteDecorSlot />
     </div>
   );
 };

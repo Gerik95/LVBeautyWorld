@@ -7,6 +7,9 @@ import { t } from "@/content/messages";
 import { legalDocs } from "@/content/legal";
 import { LOCALE_COOKIE, THEME_KEY, type ThemePref, isThemePref } from "@/lib/storage";
 import { localeSwitchPath, pathFor, type Locale } from "@/lib/site";
+import { setOptInSkin } from "@/skins";
+import { useSkinId } from "@/skins/useSkinId";
+import { askMotionPermission } from "./SkinEgg";
 
 const applyTheme = (pref: ThemePref) => {
   const dark =
@@ -22,6 +25,7 @@ export const SettingsPanel = ({ locale }: { locale: Locale }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [theme, setTheme] = useState<ThemePref>("system");
+  const winter = useSkinId() === "winter";
 
   useEffect(() => {
     const stored = localStorage.getItem(THEME_KEY);
@@ -85,6 +89,34 @@ export const SettingsPanel = ({ locale }: { locale: Locale }) => {
                 theme === value ? "bg-[var(--lv-ink)] text-[var(--lv-paper)]" : "border border-[var(--lv-line)]"
               }`}
               aria-pressed={theme === value}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="font-display text-2xl">{copy.settingsWinter}</h2>
+        <p className="text-sm text-[var(--lv-muted)]">{copy.winterNote}</p>
+        <div className="flex flex-wrap gap-2">
+          {(
+            [
+              [true, copy.winterOn],
+              [false, copy.winterOff],
+            ] as const
+          ).map(([value, label]) => (
+            <button
+              key={label}
+              type="button"
+              onClick={() => {
+                if (value) askMotionPermission();
+                setOptInSkin(value ? "winter" : null);
+              }}
+              className={`ui-hover min-h-11 rounded-[var(--radius-pill)] px-4 text-sm font-semibold ${
+                winter === value ? "bg-[var(--lv-ink)] text-[var(--lv-paper)]" : "border border-[var(--lv-line)]"
+              }`}
+              aria-pressed={winter === value}
             >
               {label}
             </button>

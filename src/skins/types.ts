@@ -22,4 +22,6 @@ export type SkinDefinition = {
   loadHeroDecor?: () => Promise<{ default: ComponentType }>;
   /** Lazy accent rendered inside the glass nav, behind the items. */
   loadNavAccent?: () => Promise<{ default: ComponentType }>;
+  /** Lazy site-wide layer (favicon, footer, page-level effects). Renders nothing visible on its own. */
+  loadSiteDecor?: () => Promise<{ default: ComponentType }>;
 };

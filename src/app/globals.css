@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../skins/winter/winter.css";
 
 :root {
   --topbar-h: 3.25rem;
@@ -1032,6 +1033,12 @@ html[data-theme="dark"] .dock {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent);
   pointer-events: none;
+}
+
+/* Skin accent slot inside the dock (NavAccentSlot). Clipped to the capsule, under the items. */
+.dock-accent {
+  border-radius: inherit;
+  overflow: hidden;
 }
 
 .dock-lens {
