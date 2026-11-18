@@ -6,8 +6,11 @@ Visiting-card website for **LV Beauty World**, a premium beauty salon in Dortmun
 
 ```bash
 npm install
-npm run dev                  # http://localhost:4317
+npm run dev                  # https://localhost:4317 and https://<LAN-IP>:4317
+npm run dev:http             # plain http, no motion sensor on phones
 ```
+
+`npm run dev` serves HTTPS with a self-signed certificate from `.cert/` (made on first run by `scripts/dev-cert.sh`). Phones send shake data only over HTTPS. On the phone open `https://<LAN-IP>:4317` and accept the certificate warning once.
 
 ```bash
 npm run typecheck

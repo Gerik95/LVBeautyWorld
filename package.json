@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack --port 4317",
+    "predev": "sh scripts/dev-cert.sh",
+    "dev": "next dev --turbopack --port 4317 --experimental-https --experimental-https-key .cert/key.pem --experimental-https-cert .cert/cert.pem",
+    "dev:http": "next dev --turbopack --port 4317",
     "build": "next build",
     "start": "next start --port 4317",
     "lint": "eslint",
