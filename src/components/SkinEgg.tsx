@@ -2,16 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { t } from "@/content/messages";
+import { motionSupported, readShake, type Vector } from "@/lib/shake";
 import type { Locale } from "@/lib/site";
 import { readOptInSkin, requestGlobe, setOptInSkin } from "@/skins";
 
 const TAPS = 3;
 const TAP_WINDOW_MS = 900;
-const SHAKE_ACCEL = 14;
-const SHAKE_DELTA = 16;
-const SHAKE_HITS = 3;
-const SHAKE_SPACING_MS = 90;
-const SHAKE_WINDOW_MS = 1000;
+const SHAKE_HITS = 2;
+const SHAKE_SPACING_MS = 80;
+const SHAKE_WINDOW_MS = 700;
 const SHAKE_COOLDOWN_MS = 2200;
 const TOAST_MS = 4200;
 const MOTION_EVENT = "lvbw:motion";
@@ -21,21 +20,35 @@ type MotionPermission = { requestPermission?: () => Promise<"granted" | "denied"
 const motionApi = () =>
   typeof DeviceMotionEvent === "undefined" ? null : (DeviceMotionEvent as unknown as MotionPermission);
 
+const needsPermission = () => Boolean(motionApi()?.requestPermission);
+
+/** iOS forgets the grant on every page load, so it is asked again once per load. */
+let permission: "idle" | "asking" | "granted" | "denied" = "idle";
+
 /**
- * iOS gives motion data only after the visitor allows it, and only from a
- * tap. Call this inside a click handler. Elsewhere it resolves at once.
- * Every browser sends motion only on HTTPS (or localhost).
+ * iOS sends motion only after `requestPermission`, called straight from a
+ * tap (`touchend` or `click`). A site the visitor already allowed gets
+ * "granted" without a prompt. Elsewhere motion needs no permission.
+ * Without a motion sensor, or outside HTTPS, nothing happens.
  */
 export const askMotionPermission = () => {
+  if (!motionSupported()) return;
   const api = motionApi();
-  if (!api?.requestPermission) return;
+  if (!api?.requestPermission) {
+    window.dispatchEvent(new CustomEvent(MOTION_EVENT));
+    return;
+  }
+  if (permission !== "idle") return;
+  permission = "asking";
   api
     .requestPermission()
     .then((answer) => {
-      if (answer === "granted") window.dispatchEvent(new CustomEvent(MOTION_EVENT));
+      permission = answer === "granted" ? "granted" : "denied";
+      if (permission === "granted") window.dispatchEvent(new CustomEvent(MOTION_EVENT));
     })
     .catch(() => {
-      /* dismissed */
+      // Not counted as a tap (for example the end of a scroll): try on the next one.
+      permission = "idle";
     });
 };
 
@@ -49,20 +62,20 @@ const insideLogo = (x: number, y: number) =>
  * Easter egg of the winter skin. Three quick taps on the brand mark, or a
  * shake of the phone, switch winter on and shake the snow globe. When winter
  * is already on the same gesture only shakes the globe; switching off is in
- * the settings. On iOS the third tap also asks for motion access, so the
- * phone can be shaken afterwards.
+ * the settings. Shake works only on touch devices with a motion sensor and
+ * over HTTPS. On iOS the first tap after a page load, while winter is on,
+ * asks for motion access, so shake can only shake the globe there.
  */
 export const SkinEgg = ({ locale }: { locale: Locale }) => {
   const [toast, setToast] = useState(false);
 
   useEffect(() => {
     let taps: number[] = [];
-    let clicks: number[] = [];
     let hits: number[] = [];
     let lastShake = 0;
-    let previous: { x: number; y: number; z: number } | null = null;
+    let previousGravity: Vector | null = null;
     let toastTimer = 0;
-    let listening = false;
+    let attached = false;
 
     const trigger = () => {
       if (readOptInSkin() !== "winter") {
@@ -89,36 +102,17 @@ export const SkinEgg = ({ locale }: { locale: Locale }) => {
       }
     };
 
-    // The permission prompt needs a click, not a pointerdown.
-    const onClick = (event: MouseEvent) => {
-      if (!motionApi()?.requestPermission || !insideLogo(event.clientX, event.clientY)) return;
-      const now = performance.now();
-      clicks = clicks.filter((stamp) => now - stamp < TAP_WINDOW_MS);
-      clicks.push(now);
-      if (clicks.length >= TAPS) {
-        clicks = [];
-        askMotionPermission();
-      }
-    };
-
     const onMotion = (event: DeviceMotionEvent) => {
       const now = performance.now();
-      let strong = false;
-      const a = event.acceleration;
-      if (a && a.x !== null && a.y !== null && a.z !== null) {
-        strong = Math.hypot(a.x, a.y, a.z) > SHAKE_ACCEL;
-      } else {
-        const g = event.accelerationIncludingGravity;
-        if (!g || g.x === null || g.y === null || g.z === null) return;
-        const current = { x: g.x, y: g.y, z: g.z };
-        if (previous) {
-          strong =
-            Math.abs(current.x - previous.x) + Math.abs(current.y - previous.y) + Math.abs(current.z - previous.z) >
-            SHAKE_DELTA;
-        }
-        previous = current;
-      }
-      if (!strong || now - lastShake < SHAKE_COOLDOWN_MS) return;
+      const sample = readShake(
+        {
+          acceleration: event.acceleration,
+          accelerationIncludingGravity: event.accelerationIncludingGravity,
+        },
+        previousGravity,
+      );
+      previousGravity = sample.gravity;
+      if (!sample.strong || now - lastShake < SHAKE_COOLDOWN_MS) return;
       if (hits.length && now - hits[hits.length - 1] < SHAKE_SPACING_MS) return;
       hits = hits.filter((stamp) => now - stamp < SHAKE_WINDOW_MS);
       hits.push(now);
@@ -129,23 +123,32 @@ export const SkinEgg = ({ locale }: { locale: Locale }) => {
       }
     };
 
-    const listen = () => {
-      if (listening || typeof DeviceMotionEvent === "undefined") return;
-      listening = true;
+    // Removing first keeps a single listener when another grant arrives.
+    const attach = () => {
+      if (!motionSupported()) return;
+      window.removeEventListener("devicemotion", onMotion);
       window.addEventListener("devicemotion", onMotion);
+      attached = true;
     };
 
-    // Without a permission API (Android, desktop) motion flows right away.
-    if (!motionApi()?.requestPermission) listen();
-    window.addEventListener(MOTION_EVENT, listen);
+    const onGesture = () => {
+      if (needsPermission() && readOptInSkin() === "winter") askMotionPermission();
+    };
+
+    if (!needsPermission()) attach();
+    window.addEventListener(MOTION_EVENT, attach);
     window.addEventListener("pointerdown", onPointerDown, { passive: true });
-    window.addEventListener("click", onClick);
+    // Safari does not always send a click to `window` for a tap on plain
+    // text, so `touchend` carries the permission request too.
+    window.addEventListener("touchend", onGesture, { passive: true });
+    window.addEventListener("click", onGesture);
     return () => {
       window.clearTimeout(toastTimer);
-      window.removeEventListener(MOTION_EVENT, listen);
+      window.removeEventListener(MOTION_EVENT, attach);
       window.removeEventListener("pointerdown", onPointerDown);
-      window.removeEventListener("click", onClick);
-      if (listening) window.removeEventListener("devicemotion", onMotion);
+      window.removeEventListener("touchend", onGesture);
+      window.removeEventListener("click", onGesture);
+      if (attached) window.removeEventListener("devicemotion", onMotion);
     };
   }, []);
 
