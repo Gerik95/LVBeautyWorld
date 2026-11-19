@@ -8,8 +8,8 @@
   NODE_VERSION = "22"
 
 # The *.netlify.app copy is for testers only: keep it out of search results so
-# it does not compete with lvbeautyworld.de. Remove this block if Netlify ever
-# serves the live domain.
+# it does not compete with lvbeautyworld.de. Pages get the same header from
+# next.config.ts. Remove both if Netlify ever serves the live domain.
 [[headers]]
   for = "/*"
   [headers.values]
