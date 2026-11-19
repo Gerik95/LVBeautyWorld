@@ -636,6 +636,306 @@ a.book-btn.ui-hover:active {
   font-size: 0.8rem;
 }
 
+/* ——— Black Week plaque (src/lib/campaign.ts) ———
+   Hidden until the head script sets html[data-campaign]. Dark: platinum
+   letters on glass, brightened by the spotlight through --beam-hit; on touch,
+   where the beam does not follow a finger, a slow glint passes instead.
+   Light: a black card with the xenon rim of the light-theme logo. */
+.promo {
+  --beam-hit: 0;
+  --promo-ink: #f4f4f5;
+  --promo-dim: #c9c9ce;
+  display: none;
+  position: relative;
+  isolation: isolate;
+  width: fit-content;
+  max-width: 100%;
+  margin-bottom: clamp(0.75rem, 2.2vh, 1.25rem);
+  padding: 0.5rem 0.5rem 0.6rem 0.95rem;
+  border-radius: 1.1rem;
+  color: var(--promo-dim);
+}
+
+html[data-campaign="blackweek"] .promo {
+  display: block;
+}
+
+.promo-lit,
+.promo-sheen {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.promo-sheen {
+  z-index: 0;
+  opacity: 0;
+  background: linear-gradient(105deg, transparent 36%, rgba(255, 255, 255, 0.2) 50%, transparent 64%) no-repeat;
+  background-size: 260% 100%;
+  background-position: 130% 0;
+}
+
+.promo-line {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.8rem;
+}
+
+.promo-label {
+  font-size: 0.7rem;
+  font-weight: 620;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.promo-offer {
+  font-family: var(--font-cormorant), "Times New Roman", serif;
+  font-size: 1.75rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  font-variant-numeric: lining-nums;
+  color: var(--promo-ink);
+}
+
+.promo-code {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+  padding: 0 0.6rem 0 0.85rem;
+  border: 1px dashed rgba(255, 255, 255, 0.34);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--promo-ink);
+  cursor: pointer;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease;
+}
+
+.promo-code:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
+.promo-code:active {
+  transform: scale(var(--ui-press-scale));
+}
+
+.promo-code:focus-visible {
+  outline: 2px solid var(--lv-ink);
+  outline-offset: 3px;
+}
+
+.promo-code-label {
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.promo-code-value {
+  font-size: 0.92rem;
+  font-weight: 680;
+  letter-spacing: 0.16em;
+}
+
+.promo-code-icon svg {
+  display: block;
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.promo-note {
+  position: relative;
+  z-index: 1;
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+/* Dark: under the beam the letters turn white and the rim lights up. */
+html[data-theme="dark"] .promo {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+  color: color-mix(in srgb, #ffffff calc(var(--beam-hit) * 100%), var(--promo-dim));
+  text-shadow: 0 0 14px rgba(255, 255, 255, calc(var(--beam-hit) * 0.45));
+  transition:
+    color 220ms ease,
+    text-shadow 220ms ease;
+}
+
+html[data-theme="dark"] .promo-offer {
+  background: linear-gradient(180deg, #ffffff 30%, #a7a9b1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+html[data-theme="dark"] .promo-lit {
+  opacity: var(--beam-hit);
+  background: linear-gradient(185deg, rgba(255, 255, 255, 0.17), transparent 62%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.72),
+    0 0 28px rgba(255, 255, 255, 0.16);
+  transition: opacity 220ms ease;
+}
+
+/* The beam is dark until the lamp has lit. */
+html[data-theme="dark"]:not([data-lamp="steady"]) .promo {
+  --beam-hit: 0 !important;
+}
+
+/* Light: black card, xenon rim lit with the lamp. */
+html[data-theme="light"] .promo {
+  --promo-dim: rgba(244, 244, 245, 0.74);
+  background: #111113;
+  box-shadow: 0 16px 36px rgba(20, 20, 24, 0.2);
+}
+
+html[data-theme="light"] .promo-code:focus-visible {
+  outline-color: var(--promo-ink);
+}
+
+html[data-theme="light"] .promo-label {
+  color: var(--promo-ink);
+}
+
+html[data-theme="light"] .promo-offer {
+  background: linear-gradient(180deg, #ffffff 35%, #c3d3ef);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+html[data-theme="light"] .promo-lit {
+  box-shadow:
+    inset 0 0 0 1px rgba(214, 228, 255, 0.5),
+    0 0 1px 1px rgba(142, 182, 244, 0.85),
+    0 0 20px rgba(118, 162, 236, 0.38);
+  transition: opacity 900ms ease;
+}
+
+html[data-theme="light"][data-lamp="arm"] .promo-lit {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-theme="light"][data-lamp="steady"] .promo-sheen {
+    animation: promo-sheen 1400ms ease-in-out 600ms 1 both;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    html[data-theme="light"] .promo:hover .promo-sheen {
+      animation: promo-sheen 1100ms ease-in-out 1 both;
+    }
+  }
+
+  @media (hover: none), (pointer: coarse) {
+    html[data-theme="dark"][data-lamp="steady"] .promo-sheen {
+      animation: promo-sheen 7s ease-in-out 800ms infinite both;
+    }
+  }
+}
+
+@keyframes promo-sheen {
+  0% {
+    opacity: 1;
+    background-position: 130% 0;
+  }
+  22% {
+    background-position: -30% 0;
+  }
+  23%,
+  100% {
+    opacity: 0;
+    background-position: -30% 0;
+  }
+}
+
+/* Phones: one row, and a smaller mark while the offer runs, so the booking
+   button stays above the dock. */
+@media (max-width: 700px) {
+  html[data-campaign="blackweek"] .logo-slot {
+    width: min(78%, 30rem);
+  }
+
+  .promo {
+    margin-bottom: 0.6rem;
+    padding: 0.4rem 0.4rem 0.5rem 0.8rem;
+  }
+
+  .promo-line {
+    column-gap: 0.55rem;
+  }
+
+  .promo-label {
+    font-size: 0.66rem;
+    letter-spacing: 0.2em;
+  }
+
+  .promo-offer {
+    font-size: 1.45rem;
+  }
+
+  .promo-code {
+    gap: 0.4rem;
+    min-height: 2.25rem;
+    padding: 0 0.5rem 0 0.7rem;
+  }
+
+  .promo-code-value {
+    font-size: 0.84rem;
+    letter-spacing: 0.12em;
+  }
+
+  .promo-note {
+    margin-top: 0.2rem;
+    font-size: 0.74rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .promo-label {
+    letter-spacing: 0.16em;
+  }
+
+  .promo-code-label {
+    display: none;
+  }
+}
+
+@media (max-height: 640px) {
+  html[data-campaign="blackweek"] .logo-slot {
+    width: min(56%, 18rem);
+  }
+
+  .promo {
+    margin-bottom: 0.5rem;
+    padding-block: 0.35rem 0.45rem;
+  }
+
+  .promo-offer {
+    font-size: 1.4rem;
+  }
+
+  .promo-code {
+    min-height: 2.2rem;
+  }
+
+  .promo-note {
+    margin-top: 0.15rem;
+    font-size: 0.74rem;
+  }
+}
+
 @media (max-height: 640px) {
   .logo-slot {
     width: min(70%, 21.7rem);

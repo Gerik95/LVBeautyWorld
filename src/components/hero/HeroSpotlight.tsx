@@ -3,6 +3,7 @@
 import { useEffect, type RefObject } from "react";
 import { glidePoint, heroPointerAction, type HeroPointer } from "@/lib/spotlightTrack";
 import { motion, resolveEffects, returnEase, spotlight } from "@/skins";
+import { beamWeight } from "@/skins/winter/geometry";
 
 type Point = { x: number; y: number };
 
@@ -71,10 +72,34 @@ export const HeroSpotlight = ({ heroRef }: { heroRef: RefObject<HTMLElement | nu
       target.style.setProperty("--beam-hit", hit.toFixed(3));
     };
 
-    const paint = () => {
-      beam.style.transform = `rotate(${angleOf(current) * (180 / Math.PI)}deg)`;
-      paintHit(current);
+    const promo = () => hero.querySelector<HTMLElement>("[data-promo]");
+
+    // The plaque is lit where the beam is drawn, by the same band model the
+    // winter snow uses, sampled along its middle line.
+    const paintPromo = (angleDeg: number) => {
+      const target = promo();
+      if (!target) return;
+      const box = target.getBoundingClientRect();
+      if (!box.width) return;
+      const rect = hero.getBoundingClientRect();
+      const y = box.top + box.height / 2 - rect.top;
+      let hit = 0;
+      for (let i = 0; i <= 4; i += 1) {
+        const x = box.left + (box.width * i) / 4 - rect.left;
+        hit = Math.max(hit, beamWeight(x, y, rect.width, rect.height, angleDeg));
+      }
+      target.style.setProperty("--beam-hit", Math.min(1, hit * 1.5).toFixed(3));
     };
+
+    const paint = () => {
+      const angleDeg = angleOf(current) * (180 / Math.PI);
+      beam.style.transform = `rotate(${angleDeg}deg)`;
+      paintHit(current);
+      paintPromo(angleDeg);
+    };
+
+    const repaintPromo = () => paintPromo(angleOf(current) * (180 / Math.PI));
+    window.addEventListener("resize", repaintPromo);
 
     const stopReturn = () => {
       if (returnFrame) window.cancelAnimationFrame(returnFrame);
@@ -161,7 +186,9 @@ export const HeroSpotlight = ({ heroRef }: { heroRef: RefObject<HTMLElement | nu
       if (!phone) {
         return () => {
           disposed = true;
+          window.removeEventListener("resize", repaintPromo);
           button()?.style.removeProperty("--beam-hit");
+          promo()?.style.removeProperty("--beam-hit");
         };
       }
 
@@ -204,8 +231,10 @@ export const HeroSpotlight = ({ heroRef }: { heroRef: RefObject<HTMLElement | nu
         disposed = true;
         if (scrollFrame) window.cancelAnimationFrame(scrollFrame);
         window.removeEventListener("scroll", onScroll);
+        window.removeEventListener("resize", repaintPromo);
         beam.style.removeProperty("opacity");
         button()?.style.removeProperty("--beam-hit");
+        promo()?.style.removeProperty("--beam-hit");
       };
     }
 
@@ -259,7 +288,9 @@ export const HeroSpotlight = ({ heroRef }: { heroRef: RefObject<HTMLElement | nu
       disposed = true;
       if (frame) window.cancelAnimationFrame(frame);
       stopReturn();
+      window.removeEventListener("resize", repaintPromo);
       button()?.style.removeProperty("--beam-hit");
+      promo()?.style.removeProperty("--beam-hit");
       hero.removeEventListener("pointerenter", handleEnter);
       hero.removeEventListener("pointermove", handleMove);
       hero.removeEventListener("pointerleave", handleLeave);
