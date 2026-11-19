@@ -2655,8 +2655,11 @@ html[data-theme="dark"] .hours-status[data-status="openingSoon"] .hours-status-l
 }
 
 /* ——— home service gallery ——— */
+/* <length-percentage>, not <percentage>: the CSS minifier rewrites 0% as 0,
+   which <percentage> rejects. The whole rule is then dropped, the property is
+   not animatable, and the colour wave and winter thaw on the photo jump. */
 @property --svc-wave {
-  syntax: "<percentage>";
+  syntax: "<length-percentage>";
   inherits: true;
   initial-value: 0%;
 }
