@@ -6,6 +6,7 @@ import type { Locale } from "@/lib/site";
 import { motion, resolveEffects } from "@/skins";
 import { BookButton } from "../BookButton";
 import { HeroDecorSlot } from "./HeroDecorSlot";
+import { HeroPromo } from "./HeroPromo";
 import { HeroSpotlight } from "./HeroSpotlight";
 import { LogoMark } from "./LogoMark";
 import { useLampIgnition } from "./useLampIgnition";
@@ -65,6 +66,7 @@ export const Hero = ({
           <LogoMark />
         </div>
         <div className="hero-copy">
+          <HeroPromo locale={locale} />
           <p className="hero-kicker">{kicker}</p>
           <h1 id="hero-title" className="hero-title">
             <span className="block">{line1}</span>

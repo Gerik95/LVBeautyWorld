@@ -101,3 +101,16 @@ export const IconChevron = ({ flip = false }: { flip?: boolean }) => (
     <path d="M6.2 3.6 10.6 8l-4.4 4.4" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
+
+export const IconCopy = ({ className }: IconProps) => (
+  <svg className={className} {...base}>
+    <rect x="8.5" y="8.5" width="10" height="11" rx="1.6" />
+    <path d="M15.5 8.5V6.1a1.6 1.6 0 0 0-1.6-1.6H7.1a1.6 1.6 0 0 0-1.6 1.6v8.3a1.6 1.6 0 0 0 1.6 1.6h1.4" />
+  </svg>
+);
+
+export const IconCheck = ({ className }: IconProps) => (
+  <svg className={className} {...base}>
+    <path d="m5.5 12.5 4.2 4.2 8.8-9.4" />
+  </svg>
+);
