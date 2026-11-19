@@ -47,10 +47,16 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       data-reveal={effects.reveal ? "on" : "off"}
       suppressHydrationWarning
     >
-      <head>
-        <ThemeScript />
-      </head>
+      {/*
+        The theme script opens <body> instead of sitting in <head>: hosts edit
+        <head> (Netlify adds a newline and a comment after the charset meta),
+        and React fails to hydrate past a stray text node there. The failed
+        hydration re-renders the page and wipes the attributes this script set
+        on <html> (data-svc, .js), which left every service panel open. It
+        still runs before any content is parsed, so the theme does not flash.
+      */}
       <body className={`${manrope.variable} ${cormorant.variable} antialiased`}>
+        <ThemeScript />
         {children}
       </body>
     </html>

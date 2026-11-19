@@ -31,7 +31,7 @@ export const liveCampaign = (now: number, search = "") => {
   return campaigns.find((campaign) => params.has(campaign.id) || isCampaignLive(campaign, now)) ?? null;
 };
 
-/** Plain ES5 for the inline head script. */
+/** Plain ES5 for the inline theme script (`ThemeScript`). */
 export const campaignScript = () =>
   `var cs=${JSON.stringify(campaigns.map(({ id, start, end }) => [id, Date.parse(start), Date.parse(end)]))};` +
   `var cn=Date.now(),cq=location.search;` +

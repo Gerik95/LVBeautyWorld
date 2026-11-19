@@ -17,7 +17,7 @@ describe("campaign", () => {
     expect(liveCampaign(at("2026-11-25T12:00:00+01:00"))?.id).toBe("blackweek");
   });
 
-  it("head script sets data-campaign the same way", () => {
+  it("theme script sets data-campaign the same way", () => {
     const run = (now: number, search: string) => {
       const e = { dataset: {} as Record<string, string> };
       const realNow = Date.now;

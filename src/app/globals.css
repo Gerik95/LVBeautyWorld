@@ -637,7 +637,7 @@ a.book-btn.ui-hover:active {
 }
 
 /* ——— Black Week plaque (src/lib/campaign.ts) ———
-   Hidden until the head script sets html[data-campaign]. Dark: platinum
+   Hidden until the theme script sets html[data-campaign]. Dark: platinum
    letters on glass, brightened by the spotlight through --beam-hit; on touch,
    where the beam does not follow a finger, a slow glint passes instead.
    Light: a black card with the xenon rim of the light-theme logo. */
