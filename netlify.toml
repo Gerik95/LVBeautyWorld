@@ -1,0 +1,16 @@
+# Test hosting on Netlify. Next.js is picked up by Netlify's Next.js runtime
+# (OpenNext), so middleware, ISR and the image optimiser work without extra
+# setup.
+[build]
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# The *.netlify.app copy is for testers only: keep it out of search results so
+# it does not compete with lvbeautyworld.de. Remove this block if Netlify ever
+# serves the live domain.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
